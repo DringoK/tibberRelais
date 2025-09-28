@@ -1,0 +1,514 @@
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-Path: <bounces+51354742755917@outbound.intercom.tibber.com>
+Authentication-Results:  gmx.net; dkim=pass header.i=@tibber.com
+Received: from mta-174-84-114.intercom.com.sparkpostmail.com
+ ([192.174.84.114]) by mx-ha.gmx.net (mxgmx108 [212.227.17.5]) with ESMTPS
+ (Nemesis) id 1MeF5z-1u4bHM24xz-00fK4j for <ingo.kreuz@gmx.net>; Sat, 04 Jan
+ 2025 21:05:36 +0100
+X-MSFBL: xjadYgDJVPtRYI0/3HC3eyHMrdBINHHu0Uk/MUV9qV0=|eyJzdWJhY2NvdW50X2l
+	kIjoiMjA5NCIsInIiOiJpbmdvLmtyZXV6QGdteC5uZXQiLCJjdXN0b21lcl9pZCI
+	6IjEiLCJtZXNzYWdlX2lkIjoiNjc2NThkOTQ3OTY3Y2FmMDAzZGYiLCJ0ZW5hbnR
+	faWQiOiJpbnRlcmNvbSJ9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tibber.com;
+	s=intercom; t=1736021134; i=@tibber.com;
+	bh=LirKBon1RKAHWg3R8bj1BqoCH7PSFEMgLoJsappZ8XQ=;
+	h=To:Content-Type:Subject:Date:From:Message-ID:From:To:Cc:Subject;
+	b=CPLV8CZTcX/OP9jD/6EkFlylsM4KTsSTFcPfuPre6ANP6WtGQDSkWXE1VjjLjQ08/
+	 N/XRm020waiFtLMNHCMn9GZy1DXqutrx97req6aP1rD8ZnFv0Qd6YJ0u/GWwsadgew
+	 qCSa974V4mhDbwD/A7cewO8NX4gKEq8dGPegynHM=
+To: ingo.kreuz@gmx.net
+Content-Type: multipart/alternative; boundary="_----wbm9Vh/cPLRvvWO0+k7rOg===_DD/38-23822-D8499776"
+MIME-Version: 1.0
+Reply-To: Tibber from Tibber <hello@tibber.com>
+Subject: =?utf-8?B?UmU6IFByZWlzZSB2b24gZ2VzdGVybiDDvGJlciBBUEkgR3JhcGhp?=
+	=?utf-8?B?UUw=?=
+References: <17e21730db958524ca1998ac5b26317ab5c93dcc@intercom> <dded7221-7acf-4ff2-8a74-e12c57139763@gmx.net>
+Date: Sat, 04 Jan 2025 20:05:33 +0000
+From: "Tibber from Tibber" <hello@tibber.com>
+X-Intercom-Comment-Id: 21934654661
+X-Intercom-Notification-Reason: support_email
+X-Intercom-Bin: proven_users
+X-Intercom-App-Id: b84ayfyf
+Message-ID: <132b84fd-e10e3981-1736021133-51354742755917-513147@outbound.intercom.tibber.com>
+X-Report-Abuse: Please report spam or abuse to abuse@intercom.io
+X-Auto-Response-Suppress: OOF, AutoReply
+In-Reply-To: <dded7221-7acf-4ff2-8a74-e12c57139763@gmx.net>
+X-Intercom-Source: workflow
+X-Mailgun-Variables: {"app_id":"b84ayfyf","conversation_id":"51354742755917","intercom_message_id":2612981360,"user_id":"654895b8dd063082b073b580"}
+Envelope-To: <ingo.kreuz@gmx.net>
+X-GMX-Antispam: 0 (Mail was not recognized as spam); Detail=V3;
+X-Spam-Flag: NO
+UI-InboundReport: notjunk:1;M01:P0:Uk/IAK6rJRU=;N7Zd/toarOhpNcbMhxcAcq9cNOg2
+ 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
+
+--_----wbm9Vh/cPLRvvWO0+k7rOg===_DD/38-23822-D8499776
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+
+Hallo Ingo, =0D=0A Um die st=C3=BCndlichen Preise von gestern =C3=BCber uns=
+ere API abzurufen, k=C3=B6nnen Sie den GraphiQL-Editor verwenden. Leider bi=
+eten wir keine vordefinierte Abfrage f=C3=BCr "gestern" an, aber Sie k=C3=
+=B6nnen die "range" Funktion nutzen, um den gew=C3=BCnschten Zeitraum abzuf=
+ragen. =0D=0A Hier ist eine Beispiel-API-Anweisung, die Sie im GraphiQL-Edi=
+tor verwenden k=C3=B6nnen: =0D=0A {=0D=0A viewer {=0D=0A homes {=0D=0A curr=
+entSubscription {=0D=0A priceInfo {=0D=0A range(resolution: HOURLY, last: 2=
+4) {=0D=0A total=0D=0A startsAt=0D=0A }=0D=0A }=0D=0A }=0D=0A }=0D=0A }=0D=
+=0A} =0D=0A Diese Abfrage gibt Ihnen die letzten 24 Stunden der Preisdaten =
+zur=C3=BCck. Beachten Sie, dass Sie m=C3=B6glicherweise die Anzahl der Stun=
+den anpassen m=C3=BCssen, je nachdem, wann Sie die Abfrage ausf=C3=BChren. =
+=0D=0A F=C3=BCr detailliertere Informationen zur API-Nutzung empfehlen wir =
+einen Blick in unsere Entwicklerdokumentation: https://developer.tibber.com=
+/docs/overview =0D=0A Diese Antwort wurde von Tibber, dem AI Agent von Tibb=
+er, verfasst.
+--_----wbm9Vh/cPLRvvWO0+k7rOg===_DD/38-23822-D8499776
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/htm=
+l4/strict.dtd">=0D=0A<html style=3D"background-color: #fff;">=0D=0A<head>=
+=0D=0A<meta content=3D"text/html; charset=3Dutf-8" http-equiv=3D"Content-Ty=
+pe">=0D=0A<meta name=3D"viewport" content=3D"width=3Ddevice-width">=0D=0A<m=
+eta name=3D"format-detection" content=3D"telephone=3Dno">=0D=0A<!-- Resets =
+-->=0D=0A=0D=0A<style type=3D"text/css" data-premailer=3D"ignore">=0D=0A  #=
+outlook a{=0D=0A    padding: 0;=0D=0A  }=0D=0A  body{=0D=0A    -webkit-text=
+-size-adjust: none;=0D=0A    -ms-text-size-adjust: none;=0D=0A    font-weig=
+ht: 400;=0D=0A  }=0D=0A  .ReadMsgBody{=0D=0A    width: 100%;=0D=0A  }=0D=0A=
+  .ExternalClass{=0D=0A    width: 100%;=0D=0A  }=0D=0A  img {=0D=0A    bord=
+er: 0;=0D=0A    max-width: 100%;=0D=0A    height: auto;=0D=0A    outline: n=
+one;=0D=0A    display: inline-block;=0D=0A    margin: 0;=0D=0A    padding: =
+0;=0D=0A    text-decoration: none;=0D=0A    line-height: 100%;=0D=0A  }=0D=
+=0A  #backgroundTable{=0D=0A    height: 100% !important;=0D=0A    margin: 0=
+;=0D=0A    padding: 0;=0D=0A    width: 100% !important;=0D=0A  }=0D=0A</sty=
+le>=0D=0A<!-- Main styles -->=0D=0A=0D=0A<style type=3D"text/css">=0D=0A  /=
+**=0D=0A   * Generic=0D=0A   */=0D=0A=0D=0A  html {=0D=0A    background-col=
+or: #fff;=0D=0A  }=0D=0A=0D=0A  .main {=0D=0A    font-family: Helvetica, Ar=
+ial, sans-serif;=0D=0A    letter-spacing: 0;=0D=0A    width: 100%;=0D=0A  }=
+=0D=0A=0D=0A  table {=0D=0A    border-spacing: 0;=0D=0A    border-collapse:=
+ separate;=0D=0A    table-layout: fixed;=0D=0A  }=0D=0A=0D=0A  td {=0D=0A  =
+  padding: 0;=0D=0A    font-family: Helvetica, Arial, sans-serif;=0D=0A  }=
+=0D=0A=0D=0A  a {=0D=0A    border: none;=0D=0A    outline: none !important;=
+=0D=0A  }=0D=0A=0D=0A=0D=0A  /**=0D=0A   * Content=0D=0A   */=0D=0A=0D=0A  =
+.content-td {=0D=0A    line-height: 20px;=0D=0A    font-size: 14px;=0D=0A =
+ }=0D=0A=0D=0A  .content-td .article-card,=0D=0A  .content-td .intercom-int=
+erblocks-link-content-container {=0D=0A    max-width: 500px;=0D=0A    borde=
+r: 1px solid #e0e0e0;=0D=0A    border-radius: 2px;=0D=0A    padding: 0;=0D=
+=0A    margin-bottom: 15px;=0D=0A  }=0D=0A=0D=0A  .content-td .article-card=
+ .intercom-interblocks-link-content-container {=0D=0A    border: none;=0D=
+=0A  }=0D=0A=0D=0A  .content-td .messenger-card table {=0D=0A    border: no=
+ne;=0D=0A  }=0D=0A=0D=0A  .events {=0D=0A    background-color: #F5F5F5;=0D=
+=0A    border-collapse: separate;=0D=0A    border-spacing: 10px;=0D=0A    t=
+able-layout: fixed;=0D=0A    border-radius: 5px;=0D=0A    border: 1px solid=
+ #E5E5E5;=0D=0A    padding: 0px 15px 0px 15px;=0D=0A  }=0D=0A=0D=0A  .conte=
+nt-td .ratings td,=0D=0A  .content-td .fin-reply-options-old td,=0D=0A  .co=
+ntent-td .messenger-card td {=0D=0A    border: 0;=0D=0A    padding: 0;=0D=
+=0A  }=0D=0A=0D=0A  .content-td .fin-reply-options td {=0D=0A    border: no=
+ne;=0D=0A    padding: 0;=0D=0A  }=0D=0A=0D=0A  .content-td .messenger-card =
+td {=0D=0A    text-align: center;=0D=0A  }=0D=0A=0D=0A  .content-td .messen=
+ger-card td p {=0D=0A    font-size: 14px;=0D=0A    color: #6e7a89;=0D=0A   =
+ text-align: center;=0D=0A  }=0D=0A=0D=0A=0D=0A  .rating-link {=0D=0A    ma=
+x-width: 27px;=0D=0A    min-height: 27px;=0D=0A  }=0D=0A=0D=0A  .content-td=
+ > :first-child {=0D=0A    margin-top: 0;=0D=0A    padding-top: 0;=0D=0A  }=
+=0D=0A=0D=0A  .content-td h1 {=0D=0A    font-size: 1.3em;=0D=0A    font-wei=
+ght: bold;=0D=0A    line-height: 25px;=0D=0A    margin-top: 20px;=0D=0A    =
+margin-bottom: 5px;=0D=0A  }=0D=0A=0D=0A  .content-td h1 + h2 {=0D=0A    ma=
+rgin-top: 0 !important;=0D=0A  }=0D=0A=0D=0A  .content-td h2 + h1 {=0D=0A  =
+  margin-top: 0 !important;=0D=0A  }=0D=0A=0D=0A  .content-td h2 {=0D=0A   =
+ font-size: 1.1em;=0D=0A    font-weight: bold;=0D=0A    margin: 20px 0 5px;=
+=0D=0A  }=0D=0A=0D=0A  .content-td h3 ,=0D=0A  .content-td h4 ,=0D=0A  .con=
+tent-td h5 {=0D=0A    font-size: 13px;=0D=0A    font-weight: bold;=0D=0A   =
+ margin-bottom: 5px;=0D=0A  }=0D=0A=0D=0A  .content-td p {=0D=0A    margin:=
+ 0 0 15px 0;=0D=0A  }=0D=0A=0D=0A  .content-td p.no-margin {=0D=0A    margi=
+n: 0;=0D=0A    min-height: 15px;=0D=0A  }=0D=0A=0D=0A  .content-td p img,=
+=0D=0A  .content-td h1 img,=0D=0A  .content-td h2 img,=0D=0A  .content-td l=
+i img,=0D=0A  .content-td .intercom-h2b-button img {=0D=0A    margin: 0;=0D=
+=0A    padding: 0;=0D=0A    vertical-align: top;=0D=0A  }=0D=0A=0D=0A  .con=
+tent-td a {=0D=0A    color: #1251ba;=0D=0A    text-decoration: underline;=
+=0D=0A  }=0D=0A=0D=0A  .content-td .messenger-card .link {=0D=0A    margin-=
+bottom: 25px;=0D=0A  }=0D=0A=0D=0A  .content-td strong {=0D=0A    color: #6=
+06060;=0D=0A  }=0D=0A=0D=0A  .content-td ol,=0D=0A  .content-td ul {=0D=0A =
+   margin: 0 0 20px 40px;=0D=0A    padding: 0;=0D=0A    list-style: disc;=
+=0D=0A  }=0D=0A=0D=0A  .content-td ol {=0D=0A    list-style: decimal;=0D=0A=
+  }=0D=0A=0D=0A  .content-td ol li,=0D=0A  .content-td ul li {=0D=0A    mar=
+gin: 5px 0;=0D=0A  }=0D=0A=0D=0A  .content-td blockquote {=0D=0A    padding=
+: 10px 0;=0D=0A    margin: 10px 0;=0D=0A    font-style: italic;=0D=0A  }=0D=
+=0A=0D=0A  .content-td blockquote a {=0D=0A    color: #8C8C8C;=0D=0A  }=0D=
+=0A=0D=0A  .content-td img {=0D=0A    max-width: 100%;=0D=0A    margin: 15p=
+x 0 15px;=0D=0A  }=0D=0A=0D=0A  .content-td .intercom-container {=0D=0A    =
+margin-bottom: 16px;=0D=0A  }=0D=0A=0D=0A  .content-td hr {=0D=0A    border=
+: none;=0D=0A    border-top: 1px solid #DDD;=0D=0A    border-bottom: 0;=0D=
+=0A    margin: 20px 0;=0D=0A  }=0D=0A=0D=0A  .content-td table th {=0D=0A  =
+  font-weight: bold;=0D=0A    background: #F6F6F6;=0D=0A  }=0D=0A=0D=0A  .c=
+ontent-td table td,=0D=0A  .content-td table th {=0D=0A    padding: 7px 10p=
+x;=0D=0A    border: 1px solid #DADADA;=0D=0A    text-align: left;=0D=0A    =
+vertical-align: top;=0D=0A  }=0D=0A=0D=0A  .content-td table {=0D=0A    mar=
+gin-bottom: 20px;=0D=0A    border-collapse: collapse;=0D=0A    border-spaci=
+ng: 0;=0D=0A  }=0D=0A=0D=0A  .content-td table.intercom-container.intercom-=
+align-center {=0D=0A    margin-left: auto;=0D=0A    margin-right: auto;=0D=
+=0A  }=0D=0A=0D=0A  .content-td table.intercom-container td {=0D=0A    bord=
+er: none;=0D=0A    padding: 0;=0D=0A    margin: 0;=0D=0A  }=0D=0A=0D=0A  .c=
+ontent-td a.reply-in-messenger-button {=0D=0A    background-color: #286efa;=
+=0D=0A    color: white;=0D=0A    padding: 6px 25px;=0D=0A    margin: 0px 0 =
+16px 0;=0D=0A    border-radius: 20px;=0D=0A    text-decoration: none;=0D=0A=
+    display: inline-block;=0D=0A    font-size: 12px;=0D=0A  }=0D=0A=0D=0A  =
+.content-td p.reply-in-messenger-message {=0D=0A    color: #8c8c8c;=0D=0A =
+   font-size: 12px;=0D=0A    margin: 0;=0D=0A  }=0D=0A=0D=0A  table.ratings=
+,=0D=0A  .content-td .messenger-card {=0D=0A      border-collapse: separate=
+;=0D=0A      border-spacing: 0;=0D=0A      table-layout: fixed;=0D=0A      =
+border-radius: 5px;=0D=0A      border: 1px solid #dadfe3;=0D=0A      margin=
+-bottom: 0;=0D=0A  }=0D=0A=0D=0A  table.fin-reply-options {=0D=0A      bord=
+er-collapse: separate;=0D=0A      border-spacing: 0;=0D=0A      table-layou=
+t: fixed;=0D=0A      margin: 0;=0D=0A  }=0D=0A=0D=0A  td .fin-reply-button =
+{=0D=0A      color: #0A2C93;=0D=0A      text-decoration: none;=0D=0A      b=
+order: 1px solid #FFFFFF !important;=0D=0A      border-radius: 40px;=0D=0A =
+     background-color: #E7ECFE;=0D=0A      padding: 8px 16px;=0D=0A      di=
+splay: block;=0D=0A      margin-right: 10px;=0D=0A  }=0D=0A=0D=0A  td .fin-=
+reply-button:hover {=0D=0A    background-color: #D3DCFF !important;=0D=0A  =
+}=0D=0A=0D=0A  .content-td table.ratings {=0D=0A      width: 260px;=0D=0A  =
+    padding: 16px 0;=0D=0A  }=0D=0A=0D=0A  table.ratings {=0D=0A      paddi=
+ng: 16px 0;=0D=0A  }=0D=0A=0D=0A  .content-td .ratings table img {=0D=0A   =
+   margin: 0;=0D=0A  }=0D=0A=0D=0A  .align_top {=0D=0A    vertical-align: t=
+op;=0D=0A  }=0D=0A=0D=0A  .align_center {=0D=0A      margin: 0 auto;=0D=0A =
+ }=0D=0A=0D=0A  /**=0D=0A   * Footer=0D=0A   */=0D=0A   .smiley {=0D=0A    =
+ padding: 4px;=0D=0A   }=0D=0A   .feedback_item:first-child .smiley {=0D=0A=
+     padding-left: 0;=0D=0A   }=0D=0A  .divider {=0D=0A    border: none;=0D=
+=0A    height: 1px;=0D=0A    color: #f0f0f0;=0D=0A    background-color: #f0=
+f0f0;=0D=0A    margin: 0;=0D=0A  }=0D=0A  .feedback-text {=0D=0A    margin-=
+bottom: 0.3em;=0D=0A    margin-top: 0;=0D=0A  }=0D=0A  .deemphasized_text {=
+=0D=0A    color: #8c8c8c;=0D=0A  }=0D=0A  .sent_to_text {=0D=0A    font-wei=
+ght: bold;=0D=0A  }=0D=0A  .dark_text {=0D=0A    color: #222;=0D=0A  }=0D=
+=0A  .light_text {=0D=0A    color: #999;=0D=0A  }=0D=0A  .align_middle {=0D=
+=0A    vertical-align: middle !important;=0D=0A  }=0D=0A=0D=0A  .history .h=
+istory_content {=0D=0A    font-style: normal;=0D=0A    padding-top: 1px;=0D=
+=0A    border-left: 1px #ccc solid;=0D=0A    margin: 0 0 0 .8ex;=0D=0A    p=
+adding-left: 1ex;=0D=0A  }=0D=0A  .history .history_content > *:last-child =
+{=0D=0A    margin-bottom: 0;=0D=0A  }=0D=0A  .powered_by_badge {=0D=0A    f=
+ont-size: 14px;=0D=0A  }=0D=0A  .powered_by_link {=0D=0A    color: #8c8c8c;=
+=0D=0A    font-weight: bold;=0D=0A    text-decoration: none;=0D=0A  }=0D=0A=
+=0D=0A  /**=0D=0A    * Email signature=0D=0A    */=0D=0A  .email_signature =
+.container {=0D=0A      margin-inline-start: 0;=0D=0A  }=0D=0A  .email_sig=
+nature th {=0D=0A      font-weight: normal;=0D=0A  }=0D=0A  .email_signatur=
+e p,=0D=0A  .email_signature h1,=0D=0A  .email_signature h2 {=0D=0A      ma=
+rgin: 0;=0D=0A      padding: 0;=0D=0A      text-align: start;=0D=0A  }=0D=
+=0A=0D=0A  .history {=0D=0A    color: #500050;=0D=0A  }=0D=0A=0D=0A  /**=0D=
+=0A   * Ticket with attributes=0D=0A   */=0D=0A=0D=0A  .ticket_card {=0D=0A=
+    border: 1px solid #E1E1E1;=0D=0A    border-radius: 8px;=0D=0A    width:=
+ 100%;=0D=0A    max-width: 570px;=0D=0A    word-wrap: break-word;=0D=0A  }=
+=0D=0A=0D=0A  .ticket_card .app_logo {=0D=0A      width: 100%;=0D=0A      p=
+adding: 18px 40px;=0D=0A      border-bottom: 1px solid #E1E1E1;=0D=0A  }=0D=
+=0A=0D=0A  .ticket_card .app_logo img {=0D=0A      height: 26px !important;=
+=0D=0A      max-height: 26px !important;=0D=0A      max-width: 100%;=0D=0A =
+ }=0D=0A=0D=0A  .ticket_card .body {=0D=0A      padding: 28px 40px;=0D=0A  =
+    font-size: 14px;=0D=0A      font-weight: 400;=0D=0A      line-height: 1=
+6px;=0D=0A      width: 100%;=0D=0A  }=0D=0A=0D=0A  .collapsed_ticket_card .=
+title,=0D=0A  .ticket_card .title {=0D=0A      font-size: 18px;=0D=0A      =
+font-weight: 700;=0D=0A      line-height: 24px;=0D=0A  }=0D=0A=0D=0A  .tick=
+et_card .ticket_state_description {=0D=0A      font-size: 16px;=0D=0A      =
+line-height: 20px;=0D=0A      padding-bottom: 24px;=0D=0A  }=0D=0A=0D=0A  .=
+ticket_card .ticket_state_step {=0D=0A      border-radius: 8px;=0D=0A      =
+height: 4px;=0D=0A      margin-bottom: 8px;=0D=0A  }=0D=0A=0D=0A  .ticket_c=
+ard .ticket_state_submitted {=0D=0A      background-color: #334bfa;=0D=0A  =
+    border-color: #334bfa;=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_state=
+_in_progress {=0D=0A      background-color: #b24d00;=0D=0A      border-colo=
+r: #b24d00;=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_state_waiting_on_cus=
+tomer {=0D=0A      background-color: #db0629;=0D=0A      border-color: #db0=
+629;=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_state_resolved {=0D=0A     =
+ background-color: #0f7134;=0D=0A      border-color: #0f7134;=0D=0A  }=0D=
+=0A=0D=0A  .ticket_card .ticket_custom_state_submitted {=0D=0A      backgro=
+und-color: #334bfa;=0D=0A      border-color: #334bfa;=0D=0A  }=0D=0A=0D=0A =
+ .ticket_card .ticket_custom_state_in_progress {=0D=0A      background-colo=
+r: #334bfa;=0D=0A      border-color: #334bfa;=0D=0A  }=0D=0A=0D=0A  .ticket=
+_card .ticket_custom_state_waiting_on_customer {=0D=0A      background-colo=
+r: #b24d00;=0D=0A      border-color: #b24d00;=0D=0A  }=0D=0A=0D=0A  .ticket=
+_card .ticket_custom_state_resolved {=0D=0A      background-color: #0f7134;=
+=0D=0A      border-color: #0f7134;=0D=0A  }=0D=0A=0D=0A  .ticket_card .tick=
+et_state_inactive {=0D=0A      background-color: #DADADA;=0D=0A      border=
+-color: #DADADA;=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_progress {=0D=
+=0A      font-size: 13px;=0D=0A      line-height: 16px;=0D=0A  }=0D=0A=0D=
+=0A  .ticket_card .ticket_state_label_inactive {=0D=0A      color: #757575;=
+=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_state_label_active {=0D=0A     =
+ font-weight: 700;=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_state_label {=
+=0D=0A      margin-bottom: 4px;=0D=0A  }=0D=0A=0D=0A  .ticket_custom_state =
+.label {=0D=0A      font-size: 16px;=0D=0A      font-style: normal;=0D=0A =
+     font-weight: 700;=0D=0A      line-height: 30px;=0D=0A  }=0D=0A=0D=0A  =
+.ticket_custom_state .submitted {=0D=0A      color: #334bfa;=0D=0A  }=0D=
+=0A=0D=0A  .ticket_custom_state .in_progress {=0D=0A      color: #334bfa;=
+=0D=0A  }=0D=0A=0D=0A  .ticket_custom_state .waiting_on_customer {=0D=0A   =
+   color: #b24d00;=0D=0A  }=0D=0A=0D=0A  .ticket_custom_state .resolved {=
+=0D=0A      color: #0f7134;=0D=0A  }=0D=0A=0D=0A  .ticket_card .attribute_n=
+ame {=0D=0A      font-weight: 600;=0D=0A      word-wrap: break-word;=0D=0A =
+ }=0D=0A=0D=0A  [dir=3D"rtl"] .ticket_card .ticket_state_spacing {=0D=0A   =
+   padding-left: 8px;=0D=0A  }=0D=0A=0D=0A  [dir=3D"ltr"] .ticket_card .tic=
+ket_state_spacing {=0D=0A      padding-right: 8px;=0D=0A  }=0D=0A=0D=0A  [d=
+ir=3D"rtl"] .ticket_card .attribute_name {=0D=0A      padding: 8px 0 8px 16=
+px;=0D=0A  }=0D=0A=0D=0A  [dir=3D"ltr"] .ticket_card .attribute_name {=0D=
+=0A      padding: 8px 16px 8px 0;=0D=0A  }=0D=0A=0D=0A  .ticket_card .attri=
+bute_value {=0D=0A      word-wrap: break-word;=0D=0A      padding: 8px 0;=
+=0D=0A  }=0D=0A=0D=0A  .ticket_card .ticket_description {=0D=0A      paddin=
+g-bottom: 24px;=0D=0A  }=0D=0A=0D=0A  .reply_in_messenger_card {=0D=0A    b=
+ackground: #F5F5F5;=0D=0A    border-radius: 8px;=0D=0A    width: 100%;=0D=
+=0A    max-width: 570px;=0D=0A    word-wrap: break-word;=0D=0A    padding: =
+16px;=0D=0A  }=0D=0A=0D=0A  .reply_in_messenger_card .title {=0D=0A    font=
+-size: 16px;=0D=0A    font-weight: 600;=0D=0A    line-height: 24px;=0D=0A  =
+  word-wrap: break-word;=0D=0A  }=0D=0A=0D=0A  .reply_in_messenger_card .bo=
+dy {=0D=0A    font-size: 14px;=0D=0A    font-weight: 400;=0D=0A    line-hei=
+ght: 20px;=0D=0A    word-wrap: break-word;=0D=0A    padding-top: 8px;=0D=0A=
+  }=0D=0A=0D=0A  .chat_notification_container {=0D=0A    width: 100%;=0D=0A=
+    max-width: 570px;=0D=0A    font-size: 14px;=0D=0A    font-weight: 400;=
+=0D=0A    line-height: 20px;=0D=0A    word-wrap: break-word;=0D=0A  }=0D=0A=
+=0D=0A  [dir=3D"rtl"] .chat_notification_container .admin_avatar_wrapper {=
+=0D=0A    padding-left: 16px;=0D=0A  }=0D=0A=0D=0A  [dir=3D"rtl"] .chat_not=
+ification_container .user_avatar_wrapper {=0D=0A      padding-right: 16px;=
+=0D=0A  }=0D=0A=0D=0A  [dir=3D"ltr"] .chat_notification_container .admin_av=
+atar_wrapper {=0D=0A      padding-right: 16px;=0D=0A  }=0D=0A=0D=0A  [dir=
+=3D"ltr"] .chat_notification_container .user_avatar_wrapper {=0D=0A      pa=
+dding-left: 16px;=0D=0A  }=0D=0A=0D=0A  [dir=3D"ltr"] .chat_notification_co=
+ntainer .message_bubble {=0D=0A      margin-left: auto;=0D=0A  }=0D=0A=0D=
+=0A  [dir=3D"rtl"] .chat_notification_container .message_bubble {=0D=0A    =
+  margin-right: auto;=0D=0A  }=0D=0A=0D=0A  .chat_notification_container .u=
+ser_avatar_wrapper .initials_avatar {=0D=0A      border-radius: 100px;=0D=
+=0A      color: white;=0D=0A      font-size: 12px;=0D=0A      height: 28px;=
+=0D=0A      line-height: 28px;=0D=0A      width: 28px;=0D=0A      text-alig=
+n: center;=0D=0A  }=0D=0A=0D=0A  .chat_notification_container .comment_wrap=
+per {=0D=0A    padding: 12px 16px;=0D=0A    border-radius: 10px;=0D=0A    b=
+ackground: #F5F5F5;=0D=0A  }=0D=0A=0D=0A  .chat_notification_container .com=
+ment_wrapper p {=0D=0A    margin: 0;=0D=0A  }=0D=0A=0D=0A  .chat_notificati=
+on_container .brand_logo img {=0D=0A      height: 26px !important;=0D=0A   =
+   max-height: 26px !important;=0D=0A      max-width: 100%;=0D=0A  }=0D=0A=
+=0D=0A  .chat_notification_container .comment_wrapper img {=0D=0A    max-wi=
+dth: 100% !important;=0D=0A  }=0D=0A=0D=0A  .collapsed_ticket_card {=0D=0A =
+   border: 1px solid #E1E1E1;=0D=0A    border-radius: 8px;=0D=0A    padding=
+: 12px 20px;=0D=0A  }=0D=0A=0D=0A  .align_middle {=0D=0A    vertical-align:=
+ middle;=0D=0A  }=0D=0A=0D=0A  @media (max-width: 768px) {=0D=0A    .ticket=
+_card .app_logo {=0D=0A      padding: 18px !important;=0D=0A    }=0D=0A=0D=
+=0A    .ticket_card .body {=0D=0A      padding: 18px !important;=0D=0A    }=
+=0D=0A=0D=0A    [dir=3D"rtl"] .ticket_card .ticket_state_spacing {=0D=0A   =
+   padding-left: 2px !important;=0D=0A    }=0D=0A=0D=0A    [dir=3D"ltr"] .t=
+icket_card .ticket_state_spacing {=0D=0A      padding-right: 2px !important=
+;=0D=0A    }=0D=0A=0D=0A    .ticket_card .ticket_state_spacing {=0D=0A     =
+ padding-right: 2px !important;=0D=0A    }=0D=0A=0D=0A    .ticket_card .tic=
+ket_description {=0D=0A      padding-bottom: 16px !important;=0D=0A    }=0D=
+=0A=0D=0A    .fin-reply-options table,=0D=0A    .fin-reply-options tbody,=
+=0D=0A    .fin-reply-options th,=0D=0A    .fin-reply-options td,=0D=0A    .=
+fin-reply-options tr {=0D=0A      display: block;=0D=0A    }=0D=0A=0D=0A   =
+ .fin-reply-options,=0D=0A    .fin-reply-options td {=0D=0A      width: 100=
+%;=0D=0A    }=0D=0A=0D=0A    .fin-reply-button-wrapper {=0D=0A      padding=
+: 0 !important;=0D=0A    }=0D=0A=0D=0A    td .fin-reply-button {=0D=0A     =
+ margin: 4px 0 !important;=0D=0A    }=0D=0A  }=0D=0A=0D=0A</style>=0D=0A=0D=
+=0A<!-- Outlook.com -->=0D=0A<style type=3D"text/css" data-premailer=3D"ign=
+ore">=0D=0A  .content-td blockquote + * {=0D=0A    margin-top: 10px !import=
+ant;=0D=0A  }=0D=0A=0D=0A  .ExternalClass .content-td h1 {=0D=0A    padding=
+: 15px 0 5px 0 !important;=0D=0A  }=0D=0A=0D=0A  .ExternalClass .content-td=
+ h2 {=0D=0A    padding: 0 0 5px 0 !important;=0D=0A  }=0D=0A=0D=0A  .Extern=
+alClass .content-td p {=0D=0A    padding: 10px 0 !important;=0D=0A  }=0D=0A=
+=0D=0A  .ExternalClass .content-td hr + * {=0D=0A    padding-top: 20px !imp=
+ortant;=0D=0A  }=0D=0A=0D=0A  .ExternalClass .content-td .intercom-containe=
+r {=0D=0A    padding: 5px 0 !important;=0D=0A  }=0D=0A=0D=0A  .ExternalClas=
+s .content-td ol ,=0D=0A  .ExternalClass .content-td ul {=0D=0A    padding:=
+ 0 0 20px 40px !important;=0D=0A    margin: 0 !important;=0D=0A  }=0D=0A=0D=
+=0A  img {=0D=0A    max-width: 600px !important;=0D=0A  }=0D=0A  @media (ma=
+x-width: 600px) {=0D=0A    img {=0D=0A      max-width: 100% !important;=0D=
+=0A    }=0D=0A  }=0D=0A</style>=0D=0A=0D=0A=0D=0A<!-- Outlook fix -->=0D=0A=
+=0D=0A<!--[if gte mso 9]>=0D=0A    <style type=3D"text/css">=0D=0A      tab=
+le {=0D=0A        border-collapse: collapse !important;=0D=0A      }=0D=0A =
+     td {=0D=0A        border-collapse: collapse !important;=0D=0A      }=
+=0D=0A    </style>=0D=0A<![endif]-->=0D=0A=0D=0A</head>=0D=0A=0D=0A<body id=
+=3D"admin_reply" dir=3D"ltr">=0D=0A<div style=3D"color:transparent;visibili=
+ty:hidden;opacity:0;font-size:0px;border:0;max-height:1px;width:1px;margin:=
+0px;padding:0px;border-width:0px!important;display:none!important;line-heig=
+ht:0px!important;"><img border=3D"0" width=3D"1" height=3D"1" src=3D"https:=
+//tibber.intercom-mail.com/q/5jHdZfffvJltaXL7h5UqCA~~/AAAAAQA~/RgRpXBmNPVcI=
+aW50ZXJjb21CCmdljZR5Z8rwA99SEmluZ28ua3JldXpAZ214Lm5ldFgEAAAILg~~" alt=3D""/=
+></div>=0D=0A=0D=0A  <table cellspacing=3D"0" border=3D"0" cellpadding=3D"0=
+" align=3D"center" bgcolor=3D"transparent" class=3D"main" style=3D"font-fam=
+ily: Helvetica, Arial, sans-serif; letter-spacing: 0; width: 100%; border-s=
+pacing: 0; border-collapse: separate; table-layout: fixed;">=0D=0A    <tbod=
+y>=0D=0A        <tr>=0D=0A  <td style=3D"font-family: Helvetica, Arial, san=
+s-serif; padding: 0;">=0D=0A    <table id=3D"reply_email" style=3D"table-la=
+yout: auto; border-spacing: 0; border-collapse: separate;">=0D=0A      <tbo=
+dy>=0D=0A=0D=0A      <tr>=0D=0A        <td class=3D"content-td" style=3D"fo=
+nt-family: Helvetica, Arial, sans-serif; line-height: 20px; font-size: 14px=
+; padding: 0 0 16px;">=0D=0A              <div style=3D"margin-top: 0; padd=
+ing-top: 0;">=0D=0A<p style=3D"margin: 0 0 15px;">Hallo Ingo,</p>=0D=0A<p s=
+tyle=3D"margin: 0 0 15px;">Um die st=C3=BCndlichen Preise von gestern =C3=
+=BCber unsere API abzurufen, k=C3=B6nnen Sie den GraphiQL-Editor verwenden.=
+ Leider bieten wir keine vordefinierte Abfrage f=C3=BCr "gestern" an, aber =
+Sie k=C3=B6nnen die "range" Funktion nutzen, um den gew=C3=BCnschten Zeitra=
+um abzufragen.</p>=0D=0A<p style=3D"margin: 0 0 15px;">Hier ist eine Beispi=
+el-API-Anweisung, die Sie im GraphiQL-Editor verwenden k=C3=B6nnen:</p>=0D=
+=0A<p style=3D"margin: 0 0 15px;">{=0D=0A  viewer {=0D=0A    homes {=0D=0A =
+     currentSubscription {=0D=0A        priceInfo {=0D=0A          range(re=
+solution: HOURLY, last: 24) {=0D=0A            total=0D=0A            start=
+sAt=0D=0A          }=0D=0A        }=0D=0A      }=0D=0A    }=0D=0A  }=0D=0A}=
+</p>=0D=0A<p style=3D"margin: 0 0 15px;">Diese Abfrage gibt Ihnen die letzt=
+en 24 Stunden der Preisdaten zur=C3=BCck. Beachten Sie, dass Sie m=C3=B6gli=
+cherweise die Anzahl der Stunden anpassen m=C3=BCssen, je nachdem, wann Sie=
+ die Abfrage ausf=C3=BChren.</p>=0D=0A<p style=3D"margin: 0 0 15px;">F=C3=
+=BCr detailliertere Informationen zur API-Nutzung empfehlen wir einen Blick=
+ in unsere Entwicklerdokumentation: <a href=3D"https://developer.tibber.com=
+/docs/overview" target=3D"_blank" class=3D"intercom-content-link" style=3D"=
+outline: none !important; color: #1251ba; text-decoration: underline; borde=
+r-style: none;">https://developer.tibber.com/docs/overview</a></p>=0D=0A<p =
+style=3D"margin: 0 0 15px;">Diese Antwort wurde von Tibber, dem AI Agent vo=
+n Tibber, verfasst.</p>=0D=0A</div>=0D=0A              <table height=3D"100=
+px" cellspacing=3D"10" class=3D"fin-reply-options" style=3D"padding-bottom:=
+ 12px; border-spacing: 0; border-collapse: separate; table-layout: fixed; m=
+argin: 0;">=0D=0A  <tbody>=0D=0A    <tr>=0D=0A      <td style=3D"line-heigh=
+t: 0px; font-size: 1px; font-family: Helvetica, Arial, sans-serif; text-ali=
+gn: left; vertical-align: top; padding: 0; border: 1px none #DADADA;" align=
+=3D"left" valign=3D"top">=0D=0A        <a href=3D"https://app.intercom.com/=
+ai_agent_email_feedback/honeypot=3Fapp_id=3D513147&conversation_id=3D513547=
+42755917&quick_reply_part_id=3D21934654663" style=3D"outline: none !importa=
+nt; color: #1251ba; text-decoration: underline; border-style: none;">=C2=A0=
+</a>=0D=0A      </td>=0D=0A    </tr>=0D=0A    <tr style=3D"text-align: star=
+t;" align=3D"start">=0D=0A      <td style=3D"font-size: 14px; color: #22222=
+2; text-align: left; font-weight: 700; font-family: Helvetica, Arial, sans-=
+serif; vertical-align: top; padding: 0; border: 1px none #DADADA;" align=3D=
+"left" valign=3D"top">=0D=0A        War dies hilfreich=3F=0D=0A      </td>=
+=0D=0A    </tr>=0D=0A    <tr>=0D=0A      <td style=3D"font-family: Helvetic=
+a, Arial, sans-serif; text-align: left; vertical-align: top; padding: 0; bo=
+rder: 1px none #DADADA;" align=3D"left" valign=3D"top">=0D=0A        <table=
+ class=3D"fin-reply-options" style=3D"border-spacing: 0; border-collapse: s=
+eparate; table-layout: fixed; margin: 0; padding: 12px 0 8px;">=0D=0A      =
+    <tr>=0D=0A              <td style=3D"text-align: center; display: inlin=
+e-block; font-family: Helvetica, Arial, sans-serif; vertical-align: top; pa=
+dding: 0; border: 1px none #DADADA;" class=3D"fin-reply-button-wrapper" ali=
+gn=3D"center" valign=3D"top">=0D=0A                <a href=3D"https://app.i=
+ntercom.com/ai_agent_email_feedback=3Fapp_id=3D513147&conversation_id=3D513=
+54742755917&quick_reply_part_id=3D21934654663&reply_option_uuid=3Da0d1a958-=
+764f-41bc-9a09-a019ec261917" class=3D"fin-reply-button" style=3D"outline: n=
+one !important; color: #0A2C93; text-decoration: none; border-radius: 40px;=
+ background-color: #E7ECFE; display: block; margin-right: 10px; padding: 8p=
+x 16px; border: 1px solid #FFFFFF;">=0D=0A                  Das hat geholfe=
+n=0D=0A                </a>=0D=0A              </td>=0D=0A              <td=
+ style=3D"text-align: center; display: inline-block; font-family: Helvetica=
+, Arial, sans-serif; vertical-align: top; padding: 0; border: 1px none #DAD=
+ADA;" class=3D"fin-reply-button-wrapper" align=3D"center" valign=3D"top">=
+=0D=0A                <a href=3D"https://app.intercom.com/ai_agent_email_fe=
+edback=3Fapp_id=3D513147&conversation_id=3D51354742755917&quick_reply_part_=
+id=3D21934654663&reply_option_uuid=3D3d0dee7a-90a9-4df3-bf78-6f9eccb48e58" =
+class=3D"fin-reply-button" style=3D"outline: none !important; color: #0A2C9=
+3; text-decoration: none; border-radius: 40px; background-color: #E7ECFE; d=
+isplay: block; margin-right: 10px; padding: 8px 16px; border: 1px solid #FF=
+FFFF;">=0D=0A                  Auf das Team warten=0D=0A                </a=
+>=0D=0A              </td>=0D=0A          </tr>=0D=0A        </table>=0D=0A=
+      </td>=0D=0A    </tr>=0D=0A    <tr style=3D"text-align: start;" align=
+=3D"start">=0D=0A      <td style=3D"font-size: 13px; color: #757575; text-a=
+lign: left; font-family: Helvetica, Arial, sans-serif; vertical-align: top;=
+ padding: 0; border: 1px none #DADADA;" align=3D"left" valign=3D"top">=0D=
+=0A        Sie k=C3=B6nnen auch einfach auf diese E-Mail antworten, wenn Si=
+e Feedback geben oder weitere Fragen stellen m=C3=B6chten.=0D=0A      </td>=
+=0D=0A    </tr>=0D=0A  </tbody>=0D=0A</table>=0D=0A        </td>=0D=0A     =
+ </tr>=0D=0A=0D=0A=0D=0A        <tr>=0D=0A            <td style=3D"font-fam=
+ily: Helvetica, Arial, sans-serif; padding: 0;">=0D=0A              <div cl=
+ass=3D"email_signature">=0D=0A                <table border=3D"0" style=3D"=
+border-spacing: 0; border-collapse: separate; table-layout: fixed;">=0D=0A =
+ <tbody>=0D=0A    <tr>=0D=0A      <td valign=3D"top" width=3D"100" style=3D=
+"font-family: Helvetica, Arial, sans-serif; padding: 0;"><img width=3D"100"=
+ height=3D"46" src=3D"https://downloads.intercomcdn.com/i/o/b84ayfyf/124295=
+2652/0b25550e8e99d79b6709004447a2/Tibber_Logotype_500x230_Black.png=3Fexpir=
+es=3D1751410836&amp;signature=3D9322e41932816cdf216561b3b267bb2543fe15d61db=
+b035c9b4f93c72d5ad923&amp;req=3DdSIjFMB7n4daW%2FMW2XS%2FifrW93pKgDKqzLl%2BG=
+lt7QmAL68LloAdYK3emnrxQ%0AqQjtF5kXEPI%3D%0A"></td>=0D=0A      <td width=3D"=
+4" style=3D"font-family: Helvetica, Arial, sans-serif; padding: 0;"></td>=
+=0D=0A      <td valign=3D"top" style=3D"font-family: Helvetica, Arial, sans=
+-serif; padding: 0;">=0D=0A<p style=3D"text-align: start; margin: 0; paddin=
+g: 0;" align=3D"start"><b>Tibber</b></p>=0D=0A<p style=3D"text-align: start=
+; margin: 0; padding: 0;" align=3D"start">Tibber</p>=0D=0A</td>=0D=0A    </=
+tr>=0D=0A  </tbody>=0D=0A</table>=0D=0A=0D=0A              </div>=0D=0A    =
+        </td>=0D=0A        </tr>=0D=0A=0D=0A      =0D=0A      <tr height=3D=
+"32"></tr>=0D=0A      </tbody>=0D=0A    </table>=0D=0A    <table style=3D"b=
+order-spacing: 0; border-collapse: separate; table-layout: fixed;">=0D=0A  =
+    <tbody>=0D=0A        <tr>=0D=0A          <td style=3D"font-family: Helv=
+etica, Arial, sans-serif; padding: 0;">=0D=0A            <div dir=3D"ltr">=
+=0D=0A              =0D=0A            </div>=0D=0A          </td>=0D=0A    =
+    </tr>=0D=0A      </tbody>=0D=0A    </table>=0D=0A  </td>=0D=0A</tr>=0D=
+=0A=0D=0A    </tbody>=0D=0A  </table>=0D=0A<img src=3D"https://tibber.inter=
+com-mail.com/via/o=3Fh=3D65f715eb21063ccf4eda19b5c0069f928f02f6cc-b84ayfyf_=
+51354742755917_21934654661" width=3D"1" height=3D"1" style=3D"display: bloc=
+k;" alt=3D"intercom">=0D=0A=0D=0A<img border=3D"0" width=3D"1" height=3D"1"=
+ alt=3D"" src=3D"https://tibber.intercom-mail.com/q/Fl0H6ckouASzSQFgMgheiw~=
+~/AAAAAQA~/RgRpXBmNPlcIaW50ZXJjb21CCmdljZR5Z8rwA99SEmluZ28ua3JldXpAZ214Lm5l=
+dFgEAAAILg~~">=0D=0A</body>=0D=0A</html>
+--_----wbm9Vh/cPLRvvWO0+k7rOg===_DD/38-23822-D8499776--
+

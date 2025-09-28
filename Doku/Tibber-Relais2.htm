@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head><title>Tibber-Relais></title></head>
+<body style="background-color:#d6f7ab; font-family:verdana"><h2>Tibber Relais</h2>
+<form action="/X">
+    <table>
+        <tr>
+            <td><label for="s"> Zeitfenster (0 ... 23) von : </label></td>
+            <td><input type="number" style="width:40px" id="s" name="s" min="0" max="23" value="0"></td>
+            <td><label for="e">&nbsp;&nbsp; bis: </label></td>
+            <td><input type="number" style="width:40px" id="e" name="e" min="0" max="23" value="23"></td>
+        </tr>
+    </table>
+    <br>Sperre aufheben (Heizen), wenn billiger als:
+    <table>
+        <tr>
+            <td><input type="radio" name="m" id="4" value="4"></td>
+            <td><label for="4"> an </label><br></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="m" id="5" value="5"></td>
+            <td><label for="5"> aus </label><br></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="m" id="2" value="2" CHECKED></td>
+            <td><label for="2"> (Preis Mittelwert + Max)/2 </label><br></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="m" id="1" value="1"></td>
+            <td><label for="1"> Preis Mittelwert</label><br></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="m" id="0" value="0"></td>
+            <td><label for="0"> (Preis Mittelwert + Min)/2 </label></td>
+        </tr>
+        <tr>
+            <td><input type="radio" name="m" id="3" value="3"></td>
+            <td><label for="3"> Preiswerteste Stunden (Anzahl): </label></td>
+            <td><input type="number" style="width:40px" id="h" name="h" min="1" max="23" value="12"></td>
+        </tr>
+    </table>
+    <br>
+    <table>
+        <tr>
+            <td><label for="i">IP-Adr Shelly: (z.B. 192.168.178.45) </label></td>
+            <td><input type="text" style="width:100px" id="i" name="i" value="192.168.178.188"></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td><input type="submit"></td>
+            <td>
+                <button style="width:100px" name="r" value="R">Aktualisieren</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="125mm" height="45mm"
+     style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+     viewBox="0 0 510 115"><defs><style type="text/css"><![CDATA[@font-face{font-family:"Verdana";font-variant:normal;font-style:normal;font-weight:normal;src:url("#FontID0") format(svg)}.sGnN {stroke:#006633;stroke-width:1}.sGnB {stroke:#006633;stroke-width:3}.sRdN {stroke:#CC3300;stroke-width:1}.sRdB {stroke:#CC3300;stroke-width:3}.sGrN {stroke:gray;stroke-width:0.5}.sGrB {stroke:gray;stroke-width:2}.sBlB {stroke:blue;stroke-width:3}.fiNo {fill:none}.fiGn {fill:#33CC66}.fiRd {fill:#FF6633}.fiGr {fill:gray}.fnt {font-size:11px}]]></style></defs>
+    <rect class="fiGn sGnN" x="32" y="101" width="6" height="14"/>
+    <line class="fiNo sGnB" x1="32" y1="118" x2="38" y2="118"/>
+    <rect class="fiGn sGnN" x="40" y="102" width="6" height="13"/>
+    <line class="fiNo sGnB" x1="40" y1="118" x2="46" y2="118"/>
+    <rect class="fiGn sGnN" x="48" y="105" width="6" height="10"/>
+    <line class="fiNo sGnB" x1="48" y1="118" x2="54" y2="118"/>
+    <rect class="fiGn sGnN" x="56" y="105" width="6" height="10"/>
+    <line class="fiNo sGnB" x1="56" y1="118" x2="62" y2="118"/>
+    <rect class="fiGn sGnN" x="64" y="105" width="6" height="10"/>
+    <line class="fiNo sGnB" x1="64" y1="118" x2="70" y2="118"/>
+    <rect class="fiGn sGnN" x="72" y="98" width="6" height="17"/>
+    <line class="fiNo sGnB" x1="72" y1="118" x2="78" y2="118"/>
+    <rect class="fiGn sGnN" x="80" y="80" width="6" height="35"/>
+    <line class="fiNo sGnB" x1="80" y1="118" x2="86" y2="118"/>
+    <rect class="fiGn sGnN" x="88" y="47" width="6" height="68"/>
+    <line class="fiNo sGnB" x1="88" y1="118" x2="94" y2="118"/>
+    <rect class="fiRd sRdN" x="96" y="15" width="6" height="100"/>
+    <line class="fiNo sGnB" x1="96" y1="118" x2="102" y2="118"/>
+    <rect class="fiGn sGnN" x="104" y="47" width="6" height="68"/>
+    <line class="fiNo sGnB" x1="104" y1="118" x2="110" y2="118"/>
+    <rect class="fiGn sGnN" x="112" y="64" width="6" height="51"/>
+    <line class="fiNo sGnB" x1="112" y1="118" x2="118" y2="118"/>
+    <rect class="fiGn sGnN" x="120" y="80" width="6" height="35"/>
+    <line class="fiNo sGnB" x1="120" y1="118" x2="126" y2="118"/>
+    <rect class="fiGn sGnN" x="128" y="94" width="6" height="21"/>
+    <line class="fiNo sGnB" x1="128" y1="118" x2="134" y2="118"/>
+    <rect class="fiGn sGnN" x="136" y="97" width="6" height="18"/>
+    <line class="fiNo sGnB" x1="136" y1="118" x2="142" y2="118"/>
+    <rect class="fiGn sGnN" x="144" y="88" width="6" height="27"/>
+    <line class="fiNo sGnB" x1="144" y1="118" x2="150" y2="118"/>
+    <rect class="fiGn sGnN" x="152" y="70" width="6" height="45"/>
+    <line class="fiNo sGnB" x1="152" y1="118" x2="158" y2="118"/>
+    <rect class="fiGn sGnN" x="160" y="52" width="6" height="63"/>
+    <line class="fiNo sGnB" x1="160" y1="118" x2="166" y2="118"/>
+    <rect class="fiRd sRdN" x="168" y="44" width="6" height="71"/>
+    <line class="fiNo sGnB" x1="168" y1="118" x2="174" y2="118"/>
+    <rect class="fiRd sRdN" x="176" y="43" width="6" height="72"/>
+    <line class="fiNo sGnB" x1="176" y1="118" x2="182" y2="118"/>
+    <rect class="fiGn sGnN" x="184" y="48" width="6" height="67"/>
+    <line class="fiNo sGnB" x1="184" y1="118" x2="190" y2="118"/>
+    <rect class="fiGn sBlB" x="192" y="64" width="6" height="51"/>
+    <line class="fiNo sGnB" x1="192" y1="118" x2="198" y2="118"/>
+    <rect class="fiGn sGnN" x="200" y="76" width="6" height="39"/>
+    <line class="fiNo sGnB" x1="200" y1="118" x2="206" y2="118"/>
+    <rect class="fiGn sGnN" x="208" y="81" width="6" height="34"/>
+    <line class="fiNo sGnB" x1="208" y1="118" x2="214" y2="118"/>
+    <rect class="fiGn sGnN" x="216" y="94" width="6" height="21"/>
+    <line class="fiNo sGnB" x1="216" y1="118" x2="222" y2="118"/>
+    <rect class="fiGn sGnN" x="224" y="95" width="6" height="20"/>
+    <line class="fiNo sGnB" x1="224" y1="118" x2="230" y2="118"/>
+    <rect class="fiGn sGnN" x="232" y="99" width="6" height="16"/>
+    <line class="fiNo sGnB" x1="232" y1="118" x2="238" y2="118"/>
+    <rect class="fiGn sGnN" x="240" y="99" width="6" height="16"/>
+    <line class="fiNo sGnB" x1="240" y1="118" x2="246" y2="118"/>
+    <rect class="fiGn sGnN" x="248" y="101" width="6" height="14"/>
+    <line class="fiNo sGnB" x1="248" y1="118" x2="254" y2="118"/>
+    <rect class="fiGn sGnN" x="256" y="104" width="6" height="11"/>
+    <line class="fiNo sGnB" x1="256" y1="118" x2="262" y2="118"/>
+    <rect class="fiGn sGnN" x="264" y="101" width="6" height="14"/>
+    <line class="fiNo sGnB" x1="264" y1="118" x2="270" y2="118"/>
+    <rect class="fiGn sGnN" x="272" y="101" width="6" height="14"/>
+    <line class="fiNo sGnB" x1="272" y1="118" x2="278" y2="118"/>
+    <rect class="fiGn sGnN" x="280" y="87" width="6" height="28"/>
+    <line class="fiNo sGnB" x1="280" y1="118" x2="286" y2="118"/>
+    <rect class="fiGn sGnN" x="288" y="76" width="6" height="39"/>
+    <line class="fiNo sGnB" x1="288" y1="118" x2="294" y2="118"/>
+    <rect class="fiGn sGnN" x="296" y="77" width="6" height="38"/>
+    <line class="fiNo sGnB" x1="296" y1="118" x2="302" y2="118"/>
+    <rect class="fiGn sGnN" x="304" y="90" width="6" height="25"/>
+    <line class="fiNo sGnB" x1="304" y1="118" x2="310" y2="118"/>
+    <rect class="fiGn sGnN" x="312" y="99" width="6" height="16"/>
+    <line class="fiNo sGnB" x1="312" y1="118" x2="318" y2="118"/>
+    <rect class="fiGn sGnN" x="320" y="101" width="6" height="14"/>
+    <line class="fiNo sGnB" x1="320" y1="118" x2="326" y2="118"/>
+    <rect class="fiGn sGnN" x="328" y="105" width="6" height="10"/>
+    <line class="fiNo sGnB" x1="328" y1="118" x2="334" y2="118"/>
+    <rect class="fiGn sGnN" x="336" y="101" width="6" height="14"/>
+    <line class="fiNo sGnB" x1="336" y1="118" x2="342" y2="118"/>
+    <rect class="fiGn sGnN" x="344" y="88" width="6" height="27"/>
+    <line class="fiNo sGnB" x1="344" y1="118" x2="350" y2="118"/>
+    <rect class="fiGn sGnN" x="352" y="72" width="6" height="43"/>
+    <line class="fiNo sGnB" x1="352" y1="118" x2="358" y2="118"/>
+    <rect class="fiRd sRdN" x="360" y="57" width="6" height="58"/>
+    <line class="fiNo sGnB" x1="360" y1="118" x2="366" y2="118"/>
+    <rect class="fiRd sRdN" x="368" y="55" width="6" height="60"/>
+    <line class="fiNo sGnB" x1="368" y1="118" x2="374" y2="118"/>
+    <rect class="fiRd sRdN" x="376" y="54" width="6" height="61"/>
+    <line class="fiNo sGnB" x1="376" y1="118" x2="382" y2="118"/>
+    <rect class="fiRd sRdN" x="384" y="66" width="6" height="49"/>
+    <line class="fiNo sGnB" x1="384" y1="118" x2="390" y2="118"/>
+    <rect class="fiGn sGnN" x="392" y="78" width="6" height="37"/>
+    <line class="fiNo sGnB" x1="392" y1="118" x2="398" y2="118"/>
+    <rect class="fiGn sGnN" x="400" y="85" width="6" height="30"/>
+    <line class="fiNo sGnB" x1="400" y1="118" x2="406" y2="118"/>
+    <rect class="fiGn sGnN" x="408" y="91" width="6" height="24"/>
+    <line class="fiNo sGnB" x1="408" y1="118" x2="414" y2="118"/>
+    <text x="0" y="105" class="fiGr fnt">34.54</text>
+    <text x="0" y="15" class="fiGr fnt">45.66   HEUTE</text>
+    <text x="0" y="45" class="fiGr fnt">41.98</text>
+    <line class="fiNo sGrN" x1="32" y1="45" x2="224" y2="45"/>
+    <text x="418" y="71" class="fiGr fnt">38.86</text>
+    <line class="fiNo sGrN" x1="224" y1="71" x2="416" y2="71"/>
+    <line class="fiNo sGrN" x1="127" y1="115" x2="127" y2="15"/>
+    <line class="fiNo sGrB" x1="223" y1="115" x2="223" y2="15"/>
+    <line class="fiNo sGrN" x1="319" y1="115" x2="319" y2="15"/>
+    <text x="121" y="15" class="fiGr fnt">12</text>
+    <text x="219" y="15" class="fiGr fnt">0   MORGEN</text>
+    <text x="313" y="15" class="fiGr fnt">12</text></svg>
+<br>
+<p style="font-size:11px;color:gray"> Version Vers.: 2025-01-16 tibber Relais (Ingo), RSSI: -37, Fr 17.01.2025 20:12:41,
+    0</body>
+</html>

@@ -1,0 +1,171 @@
+{viewer { homes { currentSubscription{ priceInfo{ today{ total  } tomorrow { total  }}}}}}
+
+direkt vom Programm:
+{"data":{"viewer":{"homes":[{"currentSubscription":null},{"currentSubscription":{"priceInfo":{"today":[{"total":0.2417},{"total":0.2319},{"total":0.2224},{"total":0.2199},{"total":0.2208},{"total":0.2266},{"total":0.2373},{"total":0.2467},{"total":0.2582},{"total":0.2522},{"total":0.2502},{"total":0.248},{"total":0.2462},{"total":0.243},{"total":0.2394},{"total":0.2403},{"total":0.2409},{"total":0.2466},{"total":0.2465},{"total":0.2431},{"total":0.2406},{"total":0.2254},{"total":0.241},{"total":0.2244}],"tomorrow":[{"total":0.2316},{"total":0.2193},{"total":0.2195},{"total":0.2149},{"total":0.215},{"total":0.2158},{"total":0.2671},{"total":0.3004},{"total":0.3102},{"total":0.3092},{"total":0.2985},{"total":0.2837},{"total":0.2832},{"total":0.285},{"total":0.2953},{"total":0.3019},{"total":0.3041},{"total":0.3232},{"total":0.3293},{"total":0.3115},{"total":0.3018},{"total":0.2952},{"total":0.2952},{"total":0.2685}]}}}]}}}
+
+über tibber API-Explorer:
+{
+  "data": {
+    "viewer": {
+      "homes": [
+        {
+          "currentSubscription": null
+        },
+        {
+          "currentSubscription": {
+            "priceInfo": {
+              "today": [
+                {
+                  "total": 0.2417
+                },
+                {
+                  "total": 0.2319
+                },
+                {
+                  "total": 0.2224
+                },
+                {
+                  "total": 0.2199
+                },
+                {
+                  "total": 0.2208
+                },
+                {
+                  "total": 0.2266
+                },
+                {
+                  "total": 0.2373
+                },
+                {
+                  "total": 0.2467
+                },
+                {
+                  "total": 0.2582
+                },
+                {
+                  "total": 0.2522
+                },
+                {
+                  "total": 0.2502
+                },
+                {
+                  "total": 0.248
+                },
+                {
+                  "total": 0.2462
+                },
+                {
+                  "total": 0.243
+                },
+                {
+                  "total": 0.2394
+                },
+                {
+                  "total": 0.2403
+                },
+                {
+                  "total": 0.2409
+                },
+                {
+                  "total": 0.2466
+                },
+                {
+                  "total": 0.2465
+                },
+                {
+                  "total": 0.2431
+                },
+                {
+                  "total": 0.2406
+                },
+                {
+                  "total": 0.2254
+                },
+                {
+                  "total": 0.241
+                },
+                {
+                  "total": 0.2244
+                }
+              ],
+              "tomorrow": [
+                {
+                  "total": 0.2316
+                },
+                {
+                  "total": 0.2193
+                },
+                {
+                  "total": 0.2195
+                },
+                {
+                  "total": 0.2149
+                },
+                {
+                  "total": 0.215
+                },
+                {
+                  "total": 0.2158
+                },
+                {
+                  "total": 0.2671
+                },
+                {
+                  "total": 0.3004
+                },
+                {
+                  "total": 0.3102
+                },
+                {
+                  "total": 0.3092
+                },
+                {
+                  "total": 0.2985
+                },
+                {
+                  "total": 0.2837
+                },
+                {
+                  "total": 0.2832
+                },
+                {
+                  "total": 0.285
+                },
+                {
+                  "total": 0.2953
+                },
+                {
+                  "total": 0.3019
+                },
+                {
+                  "total": 0.3041
+                },
+                {
+                  "total": 0.3232
+                },
+                {
+                  "total": 0.3293
+                },
+                {
+                  "total": 0.3115
+                },
+                {
+                  "total": 0.3018
+                },
+                {
+                  "total": 0.2952
+                },
+                {
+                  "total": 0.2952
+                },
+                {
+                  "total": 0.2685
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

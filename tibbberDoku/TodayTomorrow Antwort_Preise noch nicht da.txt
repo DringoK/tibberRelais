@@ -1,0 +1,92 @@
+{
+  "data": {
+    "viewer": {
+      "homes": [
+        {
+          "currentSubscription": null
+        },
+        {
+          "currentSubscription": {
+            "priceInfo": {
+              "today": [
+                {
+                  "total": 0.3444
+                },
+                {
+                  "total": 0.3283
+                },
+                {
+                  "total": 0.3203
+                },
+                {
+                  "total": 0.3206
+                },
+                {
+                  "total": 0.3153
+                },
+                {
+                  "total": 0.3084
+                },
+                {
+                  "total": 0.3088
+                },
+                {
+                  "total": 0.3072
+                },
+                {
+                  "total": 0.309
+                },
+                {
+                  "total": 0.315
+                },
+                {
+                  "total": 0.3077
+                },
+                {
+                  "total": 0.3146
+                },
+                {
+                  "total": 0.3061
+                },
+                {
+                  "total": 0.3022
+                },
+                {
+                  "total": 0.2899
+                },
+                {
+                  "total": 0.2692
+                },
+                {
+                  "total": 0.2683
+                },
+                {
+                  "total": 0.2878
+                },
+                {
+                  "total": 0.2863
+                },
+                {
+                  "total": 0.27
+                },
+                {
+                  "total": 0.2528
+                },
+                {
+                  "total": 0.2527
+                },
+                {
+                  "total": 0.2502
+                },
+                {
+                  "total": 0.2424
+                }
+              ],
+              "tomorrow": []
+            }
+          }
+        }
+      ]
+    }
+  }
+}

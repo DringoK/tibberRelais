@@ -35,7 +35,7 @@ const char* shelly_addr="";  //wenn leer, dann Shelly-Steckdose nicht verwenden
 
 
 //*********** HTML-Oberfläche
-char puffer[9300];  //Puffer für HTML-Seite (IP-Kommunikation). Datei ist 9257 Char lang
+char puffer[500];  //Puffer für HTML-Request-Empfang. Request darf maximal 500 Byte sein
 bool refreshPressed=false; //ist nach wifi_traffic() true, wenn dort Aktualisieren gedrückt wurde, sonst false
 int startZeit=11, endeZeit=15;  //default-Werte für Zeitfenster aus der Maske
 

@@ -11,17 +11,13 @@ int action; //, leistung, solar;
 //*********************************************************************************************************************
 bool wifi_traffic() ;
 int Pick_Parameter_Zahl(const char*, char*);
-void make_HTML() ;
+void send_HTML() ;
 
 void makeSVGHeader();
 void makeSVGBarChart();
 void makeSVGFooter();
 
 void send_bin(const unsigned char * , int, const char * , const char * ) ;
-void send_not_found() ;
-void send_HTML() ;
-void strcati(char* , int ) ;
-void strcati2(char*, int) ;
 int Find_End(const char *, const char *) ;
 int Find_Start(const char *, const char *) ;
 int Pick_Dec(const char *, int ) ;
@@ -60,7 +56,10 @@ bool wifi_traffic() {
   #endif  
   
   if ( (Find_Start ("/X?", puffer) < 0 && Find_Start ("/t", puffer) < 0) && Find_Start ("r=R", puffer) <0  && Find_Start ("GET / HTTP", puffer) < 0 ) {
-    send_not_found();
+    client1.print("HTTP/1.1 404 Not Found\r\n\r\n");
+    delay(20);
+    client1.stop();
+
     return false;
   }
   
@@ -77,31 +76,29 @@ bool wifi_traffic() {
     modus = Pick_Parameter_Zahl("m=", puffer);             //Mode: Benutzereingaben einlesen und verarbeiten
     stundenzahl = Pick_Parameter_Zahl("h=", puffer);       //Stundenzahl: Benutzereingaben einlesen und verarbeiten
   }
-  preisabhaengig_schalten(); //und gleich auf den neuen Modus reagieren, auf jeden Fall vor make_HTML!
-  make_HTML();  //Antwortseite aufbauen
+  preisabhaengig_schalten(); //und gleich auf den neuen Modus reagieren, auf jeden Fall vor send_HTML!
   
-  strcpy(HTTP_Header , "HTTP/1.1 200 OK\r\n"); // Header aufbauen
-  strcat(HTTP_Header, "Content-Length: ");
-  strcati(HTTP_Header, strlen(puffer));
-  strcat(HTTP_Header, "\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n");
-  client1.print(HTTP_Header);
+  // Header aufbauen
+  client1.println("HTTP/1.1 200 OK"); 
+  client1.println("\r\nContent-Type: text/html\r\nConnection: close\r\n");
 
-  send_HTML();
+  send_HTML();  //Antwortseite aufbauen
+
+  client1.stop();
 
   return true;
 }
 //*********************************************************************************************************************
-//die html-Antwort für unser Webserver-Interface in puffer zusammenbauen
+//die html-Antwort für das Webserver-Interface zusammenbauen und auf client1 ausgeben (client1 muss über server.accept verbunden sein und client.available() muss true sein)
 //
-//das F() Makro sorgt dafür, dass die String-Konstanten nicht vorher ins RAM geladen werden, sondern im Flash bleiben und von dort in puffer kopiert werden
 String backColor;
 
-void make_HTML() {
+void send_HTML() {
   static boolean farbe=LOW;
-  strcpy(puffer,"<!DOCTYPE html>");
-  strcat(puffer,"<html lang=\"de\">");
-  strcat(puffer, "<meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"); //für Schriftgroesse Smartphone
-  strcat(puffer, "<head><title>Tibber-Relais></title></head>");
+  client1.println("<!DOCTYPE html>");
+  client1.println("<html lang=\"de\">");
+  client1.println("<meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"); //für Schriftgroesse Smartphone
+  client1.println("<head><title>Tibber-Relais></title></head>");
 
   if(farbe==LOW) //Farbe hin und her schalten, als Quittung fürs Absenden
     if (currentSwitchState)
@@ -114,113 +111,118 @@ void make_HTML() {
     else  
       backColor = "#fc8da7";    //rot-blau
   farbe=!farbe;
-  sprintf(puffer+strlen(puffer), "<body style=\"background-color:%s; font-family:verdana\">", backColor.c_str());
-  strcat(puffer,"<h2>Tibber Relais</h2>");
-  strcat(puffer,"<form action=\"/X\">");
+  client1.printf("<body style=\"background-color:%s; font-family:verdana\">\r\n", backColor.c_str());
+  client1.println("<h2>Tibber Relais</h2>");
+  client1.println("<form action=\"/X\">");
 
 //*********************** Start und Ende Stunde **************************
-  strcat(puffer, "<table>");
-  strcat(puffer,   "<tr>");
-  strcat(puffer,     "<td><label for=\"s\"> Zeitfenster (0 ... 23) von : </label></td>");
-  strcat(puffer,     "<td><input type=\"number\" style= \"width:40px\" id=\"s\" name=\"s\" min=\"0\" max=\"23\" value=\"");strcati(puffer,startZeit);strcat(puffer,"\"></td>");
-  strcat(puffer,     "<td><label for=\"e\">&nbsp;&nbsp;  bis: </label></td>"); //&nbsp Leerzeichen
-  strcat(puffer,     "<td><input type=\"number\" style= \"width:40px\" id=\"e\" name=\"e\" min=\"0\" max=\"23\" value=\"");strcati(puffer,endeZeit);strcat(puffer,"\"></td>");
-  strcat(puffer,  "</tr>");
-  strcat(puffer, "</table>");
+  client1.println("<table>");
+  client1.println( "<tr>");
+  client1.println(   "<td><label for=\"s\"> Zeitfenster (0 ... 23) von : </label></td>");
+  client1.print  (   "<td><input type=\"number\" style= \"width:40px\" id=\"s\" name=\"s\" min=\"0\" max=\"23\" value=\"");
+  client1.print  (startZeit);
+  client1.println("\"></td>");
+  client1.println(   "<td><label for=\"e\">&nbsp;&nbsp;  bis: </label></td>"); //&nbsp Leerzeichen
+  client1.print  (   "<td><input type=\"number\" style= \"width:40px\" id=\"e\" name=\"e\" min=\"0\" max=\"23\" value=\"");
+  client1.print  (endeZeit);
+  client1.println("\"></td>");
+  client1.println("</tr>");
+  client1.println("</table>");
 
 //*********************** Modus: radio ***********************
-  //strcat(puffer,"<th><p>Sperre aufheben (Heizen), wenn billiger als: </p></th>");
-  strcat(puffer,"<br>Sperre aufheben (Heizen), wenn billiger als: ");
-  strcat( puffer, "<table>");
+  client1.println("<br>Sperre aufheben (Heizen), wenn billiger als: ");
+  client1.println("<table>");
 
-  strcat(puffer,"<tr>");
-  sprintf(puffer+strlen(puffer), "<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_ein, mode_ein);
-  if(modus==mode_ein) strcat(puffer," CHECKED");
-  strcat(puffer,"></td>");
-  sprintf(puffer+strlen(puffer),"<td><label for=\"%d\"> an </label><br></td>", mode_ein);
-  strcat(puffer,"</tr>");
+  client1.println("<tr>");
+  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_ein, mode_ein);
+  if(modus==mode_ein) client1.print(" CHECKED");
+  client1.println("></td>");
+  client1.printf("<td><label for=\"%d\"> an </label><br></td>\r\n", mode_ein);
+  client1.println("</tr>");
 
-  strcat(puffer,"<tr>");
-  sprintf(puffer+strlen(puffer), "<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_aus, mode_aus);
-  if(modus==mode_aus) strcat(puffer," CHECKED");
-  strcat(puffer,"></td>");
-  sprintf(puffer+strlen(puffer),"<td><label for=\"%d\"> aus </label><br></td>", mode_aus);
-  strcat(puffer,"</tr>");
+  client1.println("<tr>");
+  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_aus, mode_aus);
+  if(modus==mode_aus) client1.print(" CHECKED");
+  client1.println("></td>");
+  client1.printf("<td><label for=\"%d\"> aus </label><br></td>", mode_aus);
+  client1.println("</tr>");
 
-  strcat(puffer,"<tr>");
-  sprintf(puffer+strlen(puffer), "<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_max, mode_mittelwert_max);
-  if(modus==mode_mittelwert_max) strcat(puffer," CHECKED");
-  strcat(puffer,"></td>");
-  sprintf(puffer+strlen(puffer),"<td><label for=\"%d\"> (Preis Mittelwert + Max)/2 </label><br></td>", mode_mittelwert_max);
-  strcat(puffer,"</tr>");
+  client1.println("<tr>");
+  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_max, mode_mittelwert_max);
+  if(modus==mode_mittelwert_max) client1.print(" CHECKED");
+  client1.println("></td>");
+  client1.printf("<td><label for=\"%d\"> (Preis Mittelwert + Max)/2 </label><br></td>\r\n", mode_mittelwert_max);
+  client1.println("</tr>");
 
-  strcat(puffer,"<tr>");
-  sprintf(puffer+strlen(puffer), "<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert, mode_mittelwert);
-  if(modus==mode_mittelwert) strcat(puffer," CHECKED");
-  strcat(puffer,"></td>");
-  sprintf(puffer+strlen(puffer),"<td><label for=\"%d\"> Preis Mittelwert</label><br></td>", mode_mittelwert);
-  strcat(puffer,"</tr>");
+  client1.println("<tr>");
+  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert, mode_mittelwert);
+  if(modus==mode_mittelwert) client1.print(" CHECKED");
+  client1.println("></td>");
+  client1.printf("<td><label for=\"%d\"> Preis Mittelwert</label><br></td>\r\n", mode_mittelwert);
+  client1.println("</tr>");
 
-  strcat(puffer,"<tr>");
-  sprintf(puffer+strlen(puffer), "<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_min, mode_mittelwert_min);
-  if(modus==mode_mittelwert_min) strcat(puffer," CHECKED");
-  strcat(puffer,"></td>");
-  sprintf(puffer+strlen(puffer),"<td><label for=\"%d\"> (Preis Mittelwert + Min)/2 </label></td>", mode_mittelwert_min);
-  strcat(puffer,"</tr>");
+  client1.println("<tr>");
+  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_min, mode_mittelwert_min);
+  if(modus==mode_mittelwert_min) client1.print(" CHECKED");
+  client1.println("></td>");
+  client1.printf("<td><label for=\"%d\"> (Preis Mittelwert + Min)/2 </label></td>\r\n", mode_mittelwert_min);
+  client1.println("</tr>");
   
-  strcat(puffer,"<tr>");
-  sprintf(puffer+strlen(puffer), "<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_stundenzahl, mode_stundenzahl);
-  if(modus==mode_stundenzahl) strcat(puffer," CHECKED");
-  strcat(puffer,"></td>");
-  sprintf(puffer+strlen(puffer),"<td><label for=\"%d\"> Preiswerteste Stunden (Anzahl): </label></td>", mode_stundenzahl);
-  strcat(puffer,"<td><input type=\"number\" style= \"width:40px\" id=\"h\" name=\"h\" min=\"1\" max=\"23\"value=\"");if(stundenzahl>0) strcati(puffer,stundenzahl);strcat(puffer,"\"></td>");
-  strcat(puffer,"</tr>");
+  client1.println("<tr>");
+  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_stundenzahl, mode_stundenzahl);
+  if(modus==mode_stundenzahl) client1.print(" CHECKED");
+  client1.println("></td>");
+  client1.printf("<td><label for=\"%d\"> Preiswerteste Stunden (Anzahl): </label></td>\r\n", mode_stundenzahl);
+  client1.println("<td><input type=\"number\" style= \"width:40px\" id=\"h\" name=\"h\" min=\"1\" max=\"23\"value=\"");
+  if(stundenzahl>0) client1.print(stundenzahl);
+  client1.println("\"></td>");
+  client1.println("</tr>");
 
-  strcat(puffer,"</table>");
+  client1.println("</table>");
 
 //*********************** Senden / Aktualisieren Button ******************************
-  strcat(puffer, "<table>");
-  strcat(puffer,   "<tr>");
-  strcat(puffer,     "<td><input type=\"submit\"></td>");
-  strcat(puffer,     "<td><button style= \"width:130px\" name=\"r\" value=\"R\">Preise aktualisieren</button></td>"); 
-  strcat(puffer,   "</tr></table></form>");
+  client1.println("<table>");
+  client1.println( "<tr>");
+  client1.println(   "<td><input type=\"submit\"></td>");
+  client1.println(   "<td><button style= \"width:130px\" name=\"r\" value=\"R\">Preise aktualisieren</button></td>"); 
+  client1.println( "</tr></table></form>");
 
 //Balkendiagramm als SVG
   makeSVGHeader();
   makeSVGBarChart();
   makeSVGFooter();
 //*********************** graue Statuszeilee *******************************
-  sprintf(puffer+strlen(puffer),"<br><p style=\"font-size:11px;color:gray\"> Version: %s, RSSI: %d, %s %02d.%02d.%04d %02d:%02d:%02d, %d",
+  client1.printf("<br><p style=\"font-size:11px;color:gray\"> Version: %s, RSSI: %d, %s %02d.%02d.%04d %02d:%02d:%02d, %d\r\n",
                                  vers, wifi_station_get_rssi(), wochentag[tm.tm_wday],tm.tm_mday,tm.tm_mon,tm.tm_year,tm.tm_hour,tm.tm_min,tm.tm_sec, Aufruf_Zaehler++);
 
 //*********************** HTML Ende **************************
-  strcat(puffer,"</body>");
-  strcat(puffer,"</html> "); 
-} // Ende make_HTML
+  client1.println("</body>");
+  client1.println("</html> "); 
+} // Ende send_HTML
 
 void makeSVGHeader(){
-  strcat(puffer, "<svg xmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\" width=\"125mm\" height=\"45mm\" style=\"shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd\"");
-  strcat(puffer, "viewBox=\"0 0 510 115\">");
-  strcat(puffer, "<defs>"); //Definitionen für SVG als Bibliothek
-  strcat(puffer,   "<style type=\"text/css\">");
-  strcat(puffer,   "<![CDATA[");
-  strcat(puffer,     "@font-face{font-family:\"Verdana\";font-variant:normal;font-style:normal;font-weight:normal;src:url(\"#FontID0\") format(svg)}");
+  client1.println("<svg xmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\" width=\"125mm\" height=\"45mm\" style=\"shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd\"");
+  client1.println("viewBox=\"0 0 510 115\">");
+  client1.println("<defs>"); //Definitionen für SVG als Bibliothek
+  client1.println( "<style type=\"text/css\">");
+  client1.println( "<![CDATA[");
+  client1.println(   "@font-face{font-family:\"Verdana\";font-variant:normal;font-style:normal;font-weight:normal;src:url(\"#FontID0\") format(svg)}");
 
-  strcat(puffer,     ".sGnN {stroke:#006633;stroke-width:1}"); //stroke Green Normal
-  strcat(puffer,     ".sGnB {stroke:#006633;stroke-width:3}"); //stroke Green Bold
-  strcat(puffer,     ".sRdN {stroke:#CC3300;stroke-width:1}"); //stroke Red Normal
-  strcat(puffer,     ".sRdB {stroke:#CC3300;stroke-width:3}"); //stroke Red Bold
-  strcat(puffer,     ".sGrN {stroke:gray;stroke-width:0.5}");  //stroke Gray Normal
-  strcat(puffer,     ".sGrB {stroke:gray;stroke-width:2}");    //stroke Gray Bold
-  strcat(puffer,     ".sBlB {stroke:blue;stroke-width:3}");    //stroke Blue Bold
-  strcat(puffer,     ".fiNo {fill:none}");     //fill None
-  strcat(puffer,     ".fiGn {fill:#33CC66}");  //fill Green
-  strcat(puffer,     ".fiRd {fill:#FF6633}");  //fill Red
-  strcat(puffer,     ".fiGr {fill:gray}");     //fill Gray
-  strcat(puffer,     ".fnt {font-size:11px}");
-  strcat(puffer, "]]>");
-  strcat(puffer, "</style>");
-  strcat(puffer, "</defs>");
+  client1.println(   ".sGnN {stroke:#006633;stroke-width:1}"); //stroke Green Normal
+  client1.println(   ".sGnB {stroke:#006633;stroke-width:3}"); //stroke Green Bold
+  client1.println(   ".sRdN {stroke:#CC3300;stroke-width:1}"); //stroke Red Normal
+  client1.println(   ".sRdB {stroke:#CC3300;stroke-width:3}"); //stroke Red Bold
+  client1.println(   ".sGrN {stroke:gray;stroke-width:0.5}");  //stroke Gray Normal
+  client1.println(   ".sGrB {stroke:gray;stroke-width:2}");    //stroke Gray Bold
+  client1.println(   ".sBlB {stroke:blue;stroke-width:3}");    //stroke Blue Bold
+  client1.println(   ".fiNo {fill:none}");     //fill None
+  client1.println(   ".fiGn {fill:#33CC66}");  //fill Green
+  client1.println(   ".fiRd {fill:#FF6633}");  //fill Red
+  client1.println(   ".fiGr {fill:gray}");     //fill Gray
+  client1.println(   ".fnt {font-size:11px}");
+  client1.println("]]>");
+  client1.println("</style>");
+  client1.println("</defs>");
 } //end makeSVGHeader  
 
 
@@ -258,7 +260,8 @@ int getPreis2PixelHoehe(int preis){
 }
 
 //************************
-//Balkengrafik als SVG in den puffer schreiben
+//Balkengrafik als SVG an client1 senden
+//client1 muss available()=true sein
 void makeSVGBarChart(){
   int i=0;     //Nummer des Balkens
   int hoehe=0; //Höhe des Balkens: preisMaxAlleTage = 100%, schalttabelle[t][h]=hoehe%
@@ -315,7 +318,7 @@ void makeSVGBarChart(){
       }
 
       hoehe = getPreis2PixelHoehe(preis[t][h]);
-      sprintf(puffer+strlen(puffer),"<rect class=\"%s %s\" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\"/>", fill.c_str(), stroke.c_str(), i*WIDTH + SB, MAX_HOEHE-hoehe, WIDTH_BALKEN, hoehe);
+      client1.printf("<rect class=\"%s %s\" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\"/>\n", fill.c_str(), stroke.c_str(), i*WIDTH + SB, MAX_HOEHE-hoehe, WIDTH_BALKEN, hoehe);
 
       //grüne/rote Linie = aktuelle Stunde ist /ist nicht im Zeitfenster
       if (istInZeitfenster(h)){
@@ -323,15 +326,15 @@ void makeSVGBarChart(){
       }else{
         stroke = "sRdB"; //red bold
       }
-      sprintf(puffer+strlen(puffer),"<line class=\"fiNo %s\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>", stroke.c_str(), i*WIDTH + SB, ZF_POS, i*WIDTH + WIDTH_BALKEN + SB, ZF_POS);
+      client1.printf("<line class=\"fiNo %s\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", stroke.c_str(), i*WIDTH + SB, ZF_POS, i*WIDTH + WIDTH_BALKEN + SB, ZF_POS);
 
       i++;
     }
   }
 
   //Min/Max Beschriftung links
-  sprintf(puffer+strlen(puffer), "<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>", MAX_HOEHE - getPreis2PixelHoehe(preisMinAlleTage), preisMinAlleTage/100.0);
-  sprintf(puffer+strlen(puffer), "<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f   %s</text>", MAX_HOEHE - getPreis2PixelHoehe(preisMaxAlleTage), preisMaxAlleTage/100.0, tagLinks.c_str()); //hier Beschriftung für linken Tag anhängen
+  client1.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", MAX_HOEHE - getPreis2PixelHoehe(preisMinAlleTage), preisMinAlleTage/100.0);
+  client1.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f   %s</text>\n", MAX_HOEHE - getPreis2PixelHoehe(preisMaxAlleTage), preisMaxAlleTage/100.0, tagLinks.c_str()); //hier Beschriftung für linken Tag anhängen
 
   //waagrechter Strich "Schaltgrenze" je Tag
   int grenze=0;   //in 1/100 ct
@@ -375,79 +378,31 @@ void makeSVGBarChart(){
     }
     grenzPos = MAX_HOEHE -  getPreis2PixelHoehe(grenze);
     if (tag==startTag){ //zugehörige Beschriftung für den 1./linken Tag
-      sprintf(puffer+strlen(puffer), "<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>", grenzPos, grenze/100.0);
+      client1.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", grenzPos, grenze/100.0);
     }else{ //für den 2. /rechten Tag
-      sprintf(puffer+strlen(puffer), "<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>", ((tagIndex+1) * 24*WIDTH) + SB + 2 , grenzPos, grenze/100.0);
+      client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", ((tagIndex+1) * 24*WIDTH) + SB + 2 , grenzPos, grenze/100.0);
     }
     //Linie
-    sprintf(puffer+strlen(puffer), "<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>", SB + (tagIndex * 24*WIDTH), grenzPos, SB + ((tagIndex+1) * 24*WIDTH), grenzPos);
+    client1.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", SB + (tagIndex * 24*WIDTH), grenzPos, SB + ((tagIndex+1) * 24*WIDTH), grenzPos);
 
     tagIndex++;
   }
 
   //senkrechte graue Linien
-  sprintf(puffer+strlen(puffer), "<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>", 12*WIDTH -1 + SB, MAX_HOEHE, 12*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
-  sprintf(puffer+strlen(puffer), "<line class=\"fiNo sGrB\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>", 24*WIDTH -1 + SB, MAX_HOEHE, 24*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
-  sprintf(puffer+strlen(puffer), "<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>", 36*WIDTH -1 + SB, MAX_HOEHE, 36*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client1.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 12*WIDTH -1 + SB, MAX_HOEHE, 12*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client1.printf("<line class=\"fiNo sGrB\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 24*WIDTH -1 + SB, MAX_HOEHE, 24*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client1.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 36*WIDTH -1 + SB, MAX_HOEHE, 36*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
 
   //Beschriftung senkrechte Linien
-  sprintf(puffer+strlen(puffer), "<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>",      12*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
-  sprintf(puffer+strlen(puffer), "<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">0   %s</text>",  24*WIDTH -5 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN, tagRechts.c_str()); //hier Beschriftung für rechten Tag anhängen
-  sprintf(puffer+strlen(puffer), "<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>",      36*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>\n",      12*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">0   %s</text>\n",  24*WIDTH -5 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN, tagRechts.c_str()); //hier Beschriftung für rechten Tag anhängen
+  client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>\n",      36*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
 }  
 
 void makeSVGFooter(){
-  strcat(puffer, "</svg>");
+  client1.println("</svg>");
 }
 
-
-//*********************************************************************************************************************
-void send_not_found() {
-  client1.print("HTTP/1.1 404 Not Found\r\n\r\n");
-  delay(20);
-  client1.stop();
-}
-
-//*********************************************************************************************************************
-void send_HTML() {
-  char my_char;
-  int  my_len = strlen(puffer);
-  int  my_ptr = 0;
-  int  my_send = 0;
-  while ((my_len - my_send) > 0) {            // in Portionen senden
-    my_send = my_ptr + MAX_PACKAGE_SIZE;
-    if (my_send > my_len) {
-      client1.print(&puffer[my_ptr]);
-      delay(20);
-      my_send = my_len;
-    } else {
-      my_char = puffer[my_send];
-      // Auf Anfang eines Tags positionieren
-      while ( my_char != '<') my_char = puffer[--my_send];
-      puffer[my_send] = 0;
-      client1.print(&puffer[my_ptr]);
-      delay(20);
-      puffer[my_send] =  my_char;
-      my_ptr = my_send;
-    }
-  }
-  client1.stop();
-}
-
-//*********************************************************************************************************************
-void strcati(char* tx, int i) {
-  char tmp[8];
-  itoa(i, tmp, 10);
-  strcat (tx, tmp);
-}
-
-//*********************************************************************************************************************
-void strcati2(char* tx, int i) {
-  char tmp[8];
-  itoa(i, tmp, 10);
-  if (strlen(tmp) < 2) strcat (tx, "0");
-  strcat (tx, tmp);
-}
 
 //*********************************************************************************************************************
 int Pick_Parameter_Zahl(const char * par, char * str) {

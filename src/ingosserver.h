@@ -1,104 +1,175 @@
 //ingosserver.h abgeleitet von uwesserver.h (make 5/24 im heise-Verlag)
+//Einfacher HTML-Server beantwortet GET / HTTP - Anfragen
+//  mit einer Maske
+//    Zeitfenster
+//    Modus (an/aus/Preis Mittelwert + Max halbe, Mittelwert, Mittelwert + Min Halbe, Preiswerteste Stunden-Anzahl
+//  Buttons Daten Senden / Refresh
+//  SVG-Grafik: Balkendiagramm mit aktuellen Preisen
+//
+//Autor: DringoK
+//Version: 2025.1005
+
 WiFiServer server(80);
-WiFiClient client1;
+WiFiClient client;
 #define MAX_PACKAGE_SIZE 2048
 char HTTP_Header[110];
 int Aufruf_Zaehler = 0, switch_color=0;
-#define ACTION_Tor 1
-#define ACTION_Wallbox 2
-#define ACTION_Refresh 3
-int action; //, leistung, solar;
-//*********************************************************************************************************************
-bool wifi_traffic() ;
-int Pick_Parameter_Zahl(const char*, char*);
-void send_HTML() ;
 
-void makeSVGHeader();
-void makeSVGBarChart();
-void makeSVGFooter();
-
-void send_bin(const unsigned char * , int, const char * , const char * ) ;
-int Find_End(const char *, const char *) ;
-int Find_Start(const char *, const char *) ;
-int Pick_Dec(const char *, int ) ;
-void exhibit(const char *, int) ;
-void exhibit(const char *, unsigned int) ;
-void exhibit(const char *, unsigned long) ;
-void exhibit(const char *, const char *) ;
+//Werte, aus HTML-Maske und deren Default-Werte
+int startZeit=0, endeZeit=23;  //default-Werte für Zeitfenster aus der Maske
+int stundenzahl = 15;          //wieviele Stunden aus html-Maske für mode_stundenzahl
+enum MODUS {
+       mode_ein=0,
+       mode_aus=1,
+       mode_mittelwert_max=2, //(Mittelwert+preisMax)/2
+       mode_mittelwert=3,
+       mode_mittelwert_min=4, //(Mittelwert+preisMin)/2
+       mode_stundenzahl=5
+       };
+int modus = mode_mittelwert;
+bool refreshPressed=false; //ist nach handleWifi_traffic() true, wenn dort Aktualisieren gedrückt wurde, sonst false
 
 //*********************************************************************************************************************
-bool wifi_traffic() {
-  char my_char;
-  int htmlPtr = 0;
-  unsigned long my_timeout;
+void connectWifi();
 
-  client1 = server.accept();  // Check if a client1 has connected
-  if (!client1) return false;
-  
-  my_timeout = millis() + 250L;
-  
-  while (!client1.available() && (millis() < my_timeout) ) delay(10);
-  delay(10);
-  
-  if (millis() > my_timeout) return(-1);
-  
-  htmlPtr = 0;
-  my_char = '\0';
-  while (client1.available() && my_char != '\r') { //\r = Return
-    my_char = client1.read();
-    puffer[htmlPtr++] = my_char;
-  }
-  
-  client1.flush();
-  puffer[htmlPtr] = '\0';
-  #ifdef DEB_HTML
-    Serial.print("Empfangen: ");Serial.println(puffer);
-  #endif  
-  
-  if ( (Find_Start ("/X?", puffer) < 0 && Find_Start ("/t", puffer) < 0) && Find_Start ("r=R", puffer) <0  && Find_Start ("GET / HTTP", puffer) < 0 ) {
-    client1.print("HTTP/1.1 404 Not Found\r\n\r\n");
-    delay(20);
-    client1.stop();
+bool handleWifiTraffic(); //pollling des servers. Liefert true, wenn eine Server-Anfrage beantwortet wurde (=ein client erzeugt wurde)
 
+bool clientReceiveGETRequest();  //true, wenn es eine GET-Anfrage war
+bool interpretRequestValues(const char *req); //true, wenn /X in der Anfrage enthalten war und Werte übernommen wurden
+
+void clientPrintHTTPHeader();
+void clientPrintHTMLAnwser();
+
+void clientPrintSVGHeader();
+void clientPrintSVGBarChart();
+void clientPrintSVGFooter();
+
+int findEnd(const char *, const char *) ;
+int findStart(const char *, const char *) ;
+bool contains(const char * such, const char * str);
+
+int pickDec(const char *, int ) ;
+int pickZahl(const char*, const char*);
+
+//*****************************************************************************************************************************
+//pollling des servers. Liefert true, wenn eine Server-Anfrage beantwortet wurde (=ein client erzeugt wurde)
+bool handleWifiTraffic() {
+  client = server.accept();   //Gab es einen Server-Aufruf?
+
+  if (client) {               // Bei einem Aufruf des Servers
+    if (clientReceiveGETRequest()){   //nur antworten, wenn es ein GET-Request war
+      //Antwort senden
+      clientPrintHTTPHeader(); 
+      clientPrintHTMLAnwser();  //Antwortseite aufbauen
+    }else{
+      client.print("HTTP/1.1 404 Not Found\r\n\r\n");
+    }  
+
+    // Die Verbindung beenden
+    client.stop();
+    #ifdef DEB_HTML
+      Serial.println("Disconnected: Client.Stop");
+    #endif
+
+    return true;
+  }else{
     return false;
   }
-  
-  refreshPressed=false;
-  if (Find_Start ("r=R", puffer) > 0 ) { //Refresh wurde gedrückt
-    refreshPressed=true;
-    #ifdef DEB_HTML
-      Serial.println("REFRESH");
-    #endif  
-  }
-  if (Find_Start ("/X?", puffer) > 0) {
-    startZeit = Pick_Parameter_Zahl("s=", puffer);         //Startzeit: Benutzereingaben einlesen und verarbeiten
-    endeZeit = Pick_Parameter_Zahl("e=", puffer);          //Endezeit: Benutzereingaben einlesen und verarbeiten
-    modus = Pick_Parameter_Zahl("m=", puffer);             //Mode: Benutzereingaben einlesen und verarbeiten
-    stundenzahl = Pick_Parameter_Zahl("h=", puffer);       //Stundenzahl: Benutzereingaben einlesen und verarbeiten
-  }
-  preisabhaengig_schalten(); //und gleich auf den neuen Modus reagieren, auf jeden Fall vor send_HTML!
-  
-  // Header aufbauen
-  client1.println("HTTP/1.1 200 OK"); 
-  client1.println("\r\nContent-Type: text/html\r\nConnection: close\r\n");
 
-  send_HTML();  //Antwortseite aufbauen
-
-  client1.stop();
-
-  return true;
 }
+
+//********************************************************************************************************************
+bool clientReceiveGETRequest(){
+  String request;   //Anfrage des HTML-Clients (Browsers)
+  bool isGETRequest = false;  //bisher noch kein GET empfangen
+
+  bool emptyLine = false;     //leere Zeile empfangen?
+  char c = 0;                 //empfangenes Zeichen des Aufrufs
+
+  while (client.connected() && client.available()) {           // Loop, solange Client verbunden bis Leerzeile
+    c = client.read();                  // Ein (1) Zeichen der Anfrage des Clients lesen (bei available()==false würde 255 kommen)
+
+    #ifdef DEB_HTML
+      Serial.write(c);                  // gelesenes auf Serial ausgeben
+    #endif  
+    request += c;
+
+    if (c == '\n') {                    // eine Zeile des Requests abgeschlossen?
+      if (emptyLine) break;             //falls leere Zeile empfangen, dann Request-Ende erreicht
+      else emptyLine = true;            //neue Zeile ist neue Chance auf Leerzeile
+    }else{
+      emptyLine = false;               //jedes andere Zeichen bewirkt, dass es keine Leerzeile war
+    }  
+  } 
+
+  client.flush();
+  delay(30);
+
+  const char* requestChr = request.c_str();
+
+  isGETRequest = contains("GET", requestChr);
+
+  #ifdef DEB_HTML
+    Serial.printf("request=[%s]\n", requestChr);                    // gelesenes auf Serial ausgeben
+    Serial.printf("isGetRequest=%d\n", isGETRequest);
+  #endif  
+
+  if (interpretRequestValues(requestChr)){
+    preisabhaengig_schalten(); //und gleich auf den neuen Modus reagieren, auf jeden Fall vor clientPrintHTMLAnwser!
+  }  
+
+  return isGETRequest;
+}
+
+//********************************************************************************************************************
+bool interpretRequestValues(const char *req){ //true, wenn /X in der Anfrage enthalten war und Werte übernommen wurden
+  refreshPressed=false;
+    if (contains("r=R", req)) { //Refresh wurde gedrückt
+      refreshPressed=true;
+      #ifdef DEB_HTML
+        Serial.println("REFRESH");
+      #endif  
+    }
+
+  if (contains("/X", req) ){    //falls im GET-Request Werte aus der Maske übermittelt wurden
+    startZeit = pickZahl("s=", req);         //Startzeit: Benutzereingaben einlesen und verarbeiten
+    endeZeit = pickZahl("e=", req);          //Endezeit: Benutzereingaben einlesen und verarbeiten
+    modus = pickZahl("m=", req);             //Mode: Benutzereingaben einlesen und verarbeiten
+    stundenzahl = pickZahl("h=", req);       //Stundenzahl: Benutzereingaben einlesen und verarbeiten
+
+    return true;
+  }else{
+    return false;
+  }  
+    
+
+}
+
+//********************************************************************************************************************
+void clientPrintHTTPHeader(){
+    // Der Server sendet nun eine Antwort an den Client
+  client.println("HTTP/1.1 200 OK");
+  client.println("Content-type:text/html");
+  client.println("Connection: close");
+  client.println();
+}
+
 //*********************************************************************************************************************
-//die html-Antwort für das Webserver-Interface zusammenbauen und auf client1 ausgeben (client1 muss über server.accept verbunden sein und client.available() muss true sein)
+//die html-Antwort für das Webserver-Interface zusammenbauen und auf client ausgeben (client muss über server.accept verbunden sein und client.available() muss true sein)
 //
 String backColor;
 
-void send_HTML() {
+void clientPrintHTMLAnwser() {
+  // Die Webseite anzeigen
+  //client.println("<!DOCTYPE html><html>");
+  //client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+  //client.println("<link rel=\"icon\" href=\"data:,\"></head>");
+  //client.println("<body><h1 align=\"center\">Hier spricht dein neuer Server! :)</h1>");
   static boolean farbe=LOW;
-  client1.println("<!DOCTYPE html>");
-  client1.println("<html lang=\"de\">");
-  client1.println("<meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"); //für Schriftgroesse Smartphone
-  client1.println("<head><title>Tibber-Relais></title></head>");
+  client.print  ("<!DOCTYPE html>");
+  client.println("<html lang=\"de\">");
+  client.println("<meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"); //für Schriftgroesse Smartphone
+  client.println("<head><title>Tibber-Relais></title></head>");
 
   if(farbe==LOW) //Farbe hin und her schalten, als Quittung fürs Absenden
     if (currentSwitchState)
@@ -111,119 +182,129 @@ void send_HTML() {
     else  
       backColor = "#fc8da7";    //rot-blau
   farbe=!farbe;
-  client1.printf("<body style=\"background-color:%s; font-family:verdana\">\r\n", backColor.c_str());
-  client1.println("<h2>Tibber Relais</h2>");
-  client1.println("<form action=\"/X\">");
-
-//*********************** Start und Ende Stunde **************************
-  client1.println("<table>");
-  client1.println( "<tr>");
-  client1.println(   "<td><label for=\"s\"> Zeitfenster (0 ... 23) von : </label></td>");
-  client1.print  (   "<td><input type=\"number\" style= \"width:40px\" id=\"s\" name=\"s\" min=\"0\" max=\"23\" value=\"");
-  client1.print  (startZeit);
-  client1.println("\"></td>");
-  client1.println(   "<td><label for=\"e\">&nbsp;&nbsp;  bis: </label></td>"); //&nbsp Leerzeichen
-  client1.print  (   "<td><input type=\"number\" style= \"width:40px\" id=\"e\" name=\"e\" min=\"0\" max=\"23\" value=\"");
-  client1.print  (endeZeit);
-  client1.println("\"></td>");
-  client1.println("</tr>");
-  client1.println("</table>");
-
-//*********************** Modus: radio ***********************
-  client1.println("<br>Sperre aufheben (Heizen), wenn billiger als: ");
-  client1.println("<table>");
-
-  client1.println("<tr>");
-  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_ein, mode_ein);
-  if(modus==mode_ein) client1.print(" CHECKED");
-  client1.println("></td>");
-  client1.printf("<td><label for=\"%d\"> an </label><br></td>\r\n", mode_ein);
-  client1.println("</tr>");
-
-  client1.println("<tr>");
-  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_aus, mode_aus);
-  if(modus==mode_aus) client1.print(" CHECKED");
-  client1.println("></td>");
-  client1.printf("<td><label for=\"%d\"> aus </label><br></td>", mode_aus);
-  client1.println("</tr>");
-
-  client1.println("<tr>");
-  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_max, mode_mittelwert_max);
-  if(modus==mode_mittelwert_max) client1.print(" CHECKED");
-  client1.println("></td>");
-  client1.printf("<td><label for=\"%d\"> (Preis Mittelwert + Max)/2 </label><br></td>\r\n", mode_mittelwert_max);
-  client1.println("</tr>");
-
-  client1.println("<tr>");
-  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert, mode_mittelwert);
-  if(modus==mode_mittelwert) client1.print(" CHECKED");
-  client1.println("></td>");
-  client1.printf("<td><label for=\"%d\"> Preis Mittelwert</label><br></td>\r\n", mode_mittelwert);
-  client1.println("</tr>");
-
-  client1.println("<tr>");
-  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_min, mode_mittelwert_min);
-  if(modus==mode_mittelwert_min) client1.print(" CHECKED");
-  client1.println("></td>");
-  client1.printf("<td><label for=\"%d\"> (Preis Mittelwert + Min)/2 </label></td>\r\n", mode_mittelwert_min);
-  client1.println("</tr>");
+  client.printf("<body style=\"background-color:%s; font-family:verdana\">\r\n", backColor.c_str());
+  client.println("<h2>Tibber Relais</h2>");
   
-  client1.println("<tr>");
-  client1.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_stundenzahl, mode_stundenzahl);
-  if(modus==mode_stundenzahl) client1.print(" CHECKED");
-  client1.println("></td>");
-  client1.printf("<td><label for=\"%d\"> Preiswerteste Stunden (Anzahl): </label></td>\r\n", mode_stundenzahl);
-  client1.println("<td><input type=\"number\" style= \"width:40px\" id=\"h\" name=\"h\" min=\"1\" max=\"23\"value=\"");
-  if(stundenzahl>0) client1.print(stundenzahl);
-  client1.println("\"></td>");
-  client1.println("</tr>");
+//**************************** HTML-Formular - Tabellen *******************
+  client.println("<form action=\"/X\">");
 
-  client1.println("</table>");
+//Tabelle Zeitfenster von bis
+  client.println("<table>");
+  client.println( "<tr>");
+  client.println(   "<td><label for=\"s\"> Zeitfenster (0 ... 23) von : </label></td>");
+  client.print  (   "<td><input type=\"number\" style= \"width:40px\" id=\"s\" name=\"s\" min=\"0\" max=\"23\" value=\"");
+  client.print  (startZeit);
+  client.println("\"></td>");
+  client.println(   "<td><label for=\"e\">&nbsp;&nbsp;  bis: </label></td>"); //&nbsp Leerzeichen
+  client.print  (   "<td><input type=\"number\" style= \"width:40px\" id=\"e\" name=\"e\" min=\"0\" max=\"23\" value=\"");
+  client.print  (endeZeit);
+  client.println("\"></td>");
+  client.println("</tr>");
+  client.println("</table>");
 
-//*********************** Senden / Aktualisieren Button ******************************
-  client1.println("<table>");
-  client1.println( "<tr>");
-  client1.println(   "<td><input type=\"submit\"></td>");
-  client1.println(   "<td><button style= \"width:130px\" name=\"r\" value=\"R\">Preise aktualisieren</button></td>"); 
-  client1.println( "</tr></table></form>");
+//Tabelle Sperre aufheben : Modus (Radiobuttons)
+  client.println("<br>Sperre aufheben (Heizen), wenn billiger als: ");
+  client.println("<table>");
 
-//Balkendiagramm als SVG
-  makeSVGHeader();
-  makeSVGBarChart();
-  makeSVGFooter();
+  Serial.printf("Modus=%d", modus);
+
+  client.println("<tr>");
+  client.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_ein, mode_ein);
+  if(modus==mode_ein) client.print(" CHECKED");
+  client.println("></td>");
+  client.printf("<td><label for=\"%d\"> an </label><br></td>\r\n", mode_ein);
+  client.println("</tr>");
+
+  client.println("<tr>");
+  client.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_aus, mode_aus);
+  if(modus==mode_aus) client.print(" CHECKED");
+  client.println("></td>");
+  client.printf("<td><label for=\"%d\"> aus </label><br></td>", mode_aus);
+  client.println("</tr>");
+
+  client.println("<tr>");
+  client.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_max, mode_mittelwert_max);
+  if(modus==mode_mittelwert_max) client.print(" CHECKED");
+  client.println("></td>");
+  client.printf("<td><label for=\"%d\"> (Preis Mittelwert + Max)/2 </label><br></td>\r\n", mode_mittelwert_max);
+  client.println("</tr>");
+
+  client.println("<tr>");
+  client.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert, mode_mittelwert);
+  if(modus==mode_mittelwert) client.print(" CHECKED");
+  client.println("></td>");
+  client.printf("<td><label for=\"%d\"> Preis Mittelwert</label><br></td>\r\n", mode_mittelwert);
+  client.println("</tr>");
+
+  client.println("<tr>");
+  client.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_mittelwert_min, mode_mittelwert_min);
+  if(modus==mode_mittelwert_min) client.print(" CHECKED");
+  client.println("></td>");
+  client.printf("<td><label for=\"%d\"> (Preis Mittelwert + Min)/2 </label></td>\r\n", mode_mittelwert_min);
+  client.println("</tr>");
+  
+  client.println("<tr>");
+  client.printf("<td><input type=\"radio\" name=\"m\" id=\"%d\" value=\"%d\"", mode_stundenzahl, mode_stundenzahl);
+  if(modus==mode_stundenzahl) client.print(" CHECKED");
+  client.println("></td>");
+  client.printf("<td><label for=\"%d\"> Preiswerteste Stunden (Anzahl): </label></td>\r\n", mode_stundenzahl);
+  client.print ("<td><input type=\"number\" style= \"width:40px\" id=\"h\" name=\"h\" min=\"1\" max=\"23\"value=\"");
+  if(stundenzahl>0) client.print(stundenzahl);
+  client.println("\"></td>");
+  client.println("</tr>");
+
+  client.println("</table>");
+
+//Tabelle mit Senden / Aktualisieren Buttons
+  client.println("<table><tr>");
+  client.println(   "<td><input type=\"submit\"></td>");
+  client.println(   "<td><button style= \"width:130px\" name=\"r\" value=\"R\">Preise aktualisieren</button></td>"); 
+  client.println( "</tr></table>")
+  ;
+  client.println("</form>");
+
+
+//******************** Preise-Balkendiagramm als SVG ***********************
+  clientPrintSVGHeader();
+  clientPrintSVGBarChart();
+  clientPrintSVGFooter();
+
 //*********************** graue Statuszeilee *******************************
-  client1.printf("<br><p style=\"font-size:11px;color:gray\"> Version: %s, RSSI: %d, %s %02d.%02d.%04d %02d:%02d:%02d, %d\r\n",
-                                 vers, wifi_station_get_rssi(), wochentag[tm.tm_wday],tm.tm_mday,tm.tm_mon,tm.tm_year,tm.tm_hour,tm.tm_min,tm.tm_sec, Aufruf_Zaehler++);
-
+  client.printf("<br><p style=\"font-size:11px;color:gray\"> Version: %s, RSSI: %d, %s %02d.%02d.%04d %02d:%02d:%02d, recon=%d, count=%d\r\n",
+                                 vers, wifi_station_get_rssi(), wochentag[tm.tm_wday],tm.tm_mday,tm.tm_mon,tm.tm_year,tm.tm_hour,tm.tm_min,tm.tm_sec, Reconnect_Zaehler, Aufruf_Zaehler++);
 //*********************** HTML Ende **************************
-  client1.println("</body>");
-  client1.println("</html> "); 
-} // Ende send_HTML
+  client.println("</body>");
+  client.println("</html>"); 
 
-void makeSVGHeader(){
-  client1.println("<svg xmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\" width=\"125mm\" height=\"45mm\" style=\"shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd\"");
-  client1.println("viewBox=\"0 0 510 115\">");
-  client1.println("<defs>"); //Definitionen für SVG als Bibliothek
-  client1.println( "<style type=\"text/css\">");
-  client1.println( "<![CDATA[");
-  client1.println(   "@font-face{font-family:\"Verdana\";font-variant:normal;font-style:normal;font-weight:normal;src:url(\"#FontID0\") format(svg)}");
 
-  client1.println(   ".sGnN {stroke:#006633;stroke-width:1}"); //stroke Green Normal
-  client1.println(   ".sGnB {stroke:#006633;stroke-width:3}"); //stroke Green Bold
-  client1.println(   ".sRdN {stroke:#CC3300;stroke-width:1}"); //stroke Red Normal
-  client1.println(   ".sRdB {stroke:#CC3300;stroke-width:3}"); //stroke Red Bold
-  client1.println(   ".sGrN {stroke:gray;stroke-width:0.5}");  //stroke Gray Normal
-  client1.println(   ".sGrB {stroke:gray;stroke-width:2}");    //stroke Gray Bold
-  client1.println(   ".sBlB {stroke:blue;stroke-width:3}");    //stroke Blue Bold
-  client1.println(   ".fiNo {fill:none}");     //fill None
-  client1.println(   ".fiGn {fill:#33CC66}");  //fill Green
-  client1.println(   ".fiRd {fill:#FF6633}");  //fill Red
-  client1.println(   ".fiGr {fill:gray}");     //fill Gray
-  client1.println(   ".fnt {font-size:11px}");
-  client1.println("]]>");
-  client1.println("</style>");
-  client1.println("</defs>");
-} //end makeSVGHeader  
+  // Die Antwort mit einer Leerzeile beenden
+  client.println();
+} // Ende clientPrintHTMLAnwser
+
+void clientPrintSVGHeader(){
+  client.println("<svg xmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\" width=\"125mm\" height=\"45mm\" style=\"shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd\"");
+  client.println("viewBox=\"0 0 510 115\">");
+  client.println("<defs>"); //Definitionen für SVG als Bibliothek
+  client.println( "<style type=\"text/css\">");
+  client.println( "<![CDATA[");
+  client.println(   "@font-face{font-family:\"Verdana\";font-variant:normal;font-style:normal;font-weight:normal;src:url(\"#FontID0\") format(svg)}");
+
+  client.println(   ".sGnN {stroke:#006633;stroke-width:1}"); //stroke Green Normal
+  client.println(   ".sGnB {stroke:#006633;stroke-width:3}"); //stroke Green Bold
+  client.println(   ".sRdN {stroke:#CC3300;stroke-width:1}"); //stroke Red Normal
+  client.println(   ".sRdB {stroke:#CC3300;stroke-width:3}"); //stroke Red Bold
+  client.println(   ".sGrN {stroke:gray;stroke-width:0.5}");  //stroke Gray Normal
+  client.println(   ".sGrB {stroke:gray;stroke-width:2}");    //stroke Gray Bold
+  client.println(   ".sBlB {stroke:blue;stroke-width:3}");    //stroke Blue Bold
+  client.println(   ".fiNo {fill:none}");     //fill None
+  client.println(   ".fiGn {fill:#33CC66}");  //fill Green
+  client.println(   ".fiRd {fill:#FF6633}");  //fill Red
+  client.println(   ".fiGr {fill:gray}");     //fill Gray
+  client.println(   ".fnt {font-size:11px}");
+  client.println("]]>");
+  client.println("</style>");
+  client.println("</defs>");
+} //end clientPrintSVGHeader  
 
 
 static const int SB=32;          //Schriftbreite linker Rand
@@ -262,7 +343,7 @@ int getPreis2PixelHoehe(int preis){
 //************************
 //Balkengrafik als SVG an client1 senden
 //client1 muss available()=true sein
-void makeSVGBarChart(){
+void clientPrintSVGBarChart(){
   int i=0;     //Nummer des Balkens
   int hoehe=0; //Höhe des Balkens: preisMaxAlleTage = 100%, schalttabelle[t][h]=hoehe%
   String fill;
@@ -318,7 +399,7 @@ void makeSVGBarChart(){
       }
 
       hoehe = getPreis2PixelHoehe(preis[t][h]);
-      client1.printf("<rect class=\"%s %s\" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\"/>\n", fill.c_str(), stroke.c_str(), i*WIDTH + SB, MAX_HOEHE-hoehe, WIDTH_BALKEN, hoehe);
+      client.printf("<rect class=\"%s %s\" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\"/>\n", fill.c_str(), stroke.c_str(), i*WIDTH + SB, MAX_HOEHE-hoehe, WIDTH_BALKEN, hoehe);
 
       //grüne/rote Linie = aktuelle Stunde ist /ist nicht im Zeitfenster
       if (istInZeitfenster(h)){
@@ -326,15 +407,15 @@ void makeSVGBarChart(){
       }else{
         stroke = "sRdB"; //red bold
       }
-      client1.printf("<line class=\"fiNo %s\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", stroke.c_str(), i*WIDTH + SB, ZF_POS, i*WIDTH + WIDTH_BALKEN + SB, ZF_POS);
+      client.printf("<line class=\"fiNo %s\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", stroke.c_str(), i*WIDTH + SB, ZF_POS, i*WIDTH + WIDTH_BALKEN + SB, ZF_POS);
 
       i++;
     }
   }
 
   //Min/Max Beschriftung links
-  client1.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", MAX_HOEHE - getPreis2PixelHoehe(preisMinAlleTage), preisMinAlleTage/100.0);
-  client1.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f   %s</text>\n", MAX_HOEHE - getPreis2PixelHoehe(preisMaxAlleTage), preisMaxAlleTage/100.0, tagLinks.c_str()); //hier Beschriftung für linken Tag anhängen
+  client.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", MAX_HOEHE - getPreis2PixelHoehe(preisMinAlleTage), preisMinAlleTage/100.0);
+  client.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f   %s</text>\n", MAX_HOEHE - getPreis2PixelHoehe(preisMaxAlleTage), preisMaxAlleTage/100.0, tagLinks.c_str()); //hier Beschriftung für linken Tag anhängen
 
   //waagrechter Strich "Schaltgrenze" je Tag
   int grenze=0;   //in 1/100 ct
@@ -378,62 +459,67 @@ void makeSVGBarChart(){
     }
     grenzPos = MAX_HOEHE -  getPreis2PixelHoehe(grenze);
     if (tag==startTag){ //zugehörige Beschriftung für den 1./linken Tag
-      client1.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", grenzPos, grenze/100.0);
+      client.printf("<text x=\"0\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", grenzPos, grenze/100.0);
     }else{ //für den 2. /rechten Tag
-      client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", ((tagIndex+1) * 24*WIDTH) + SB + 2 , grenzPos, grenze/100.0);
+      client.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">%.2f</text>\n", ((tagIndex+1) * 24*WIDTH) + SB + 2 , grenzPos, grenze/100.0);
     }
     //Linie
-    client1.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", SB + (tagIndex * 24*WIDTH), grenzPos, SB + ((tagIndex+1) * 24*WIDTH), grenzPos);
+    client.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", SB + (tagIndex * 24*WIDTH), grenzPos, SB + ((tagIndex+1) * 24*WIDTH), grenzPos);
 
     tagIndex++;
   }
 
   //senkrechte graue Linien
-  client1.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 12*WIDTH -1 + SB, MAX_HOEHE, 12*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
-  client1.printf("<line class=\"fiNo sGrB\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 24*WIDTH -1 + SB, MAX_HOEHE, 24*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
-  client1.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 36*WIDTH -1 + SB, MAX_HOEHE, 36*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 12*WIDTH -1 + SB, MAX_HOEHE, 12*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client.printf("<line class=\"fiNo sGrB\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 24*WIDTH -1 + SB, MAX_HOEHE, 24*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client.printf("<line class=\"fiNo sGrN\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n", 36*WIDTH -1 + SB, MAX_HOEHE, 36*WIDTH -1 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
 
   //Beschriftung senkrechte Linien
-  client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>\n",      12*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
-  client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">0   %s</text>\n",  24*WIDTH -5 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN, tagRechts.c_str()); //hier Beschriftung für rechten Tag anhängen
-  client1.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>\n",      36*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>\n",      12*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
+  client.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">0   %s</text>\n",  24*WIDTH -5 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN, tagRechts.c_str()); //hier Beschriftung für rechten Tag anhängen
+  client.printf("<text x=\"%d\" y=\"%d\" class=\"fiGr fnt\">12</text>\n",      36*WIDTH -7 + SB, MAX_HOEHE-MAX_HOEHE_BALKEN);
 }  
 
-void makeSVGFooter(){
-  client1.println("</svg>");
+void clientPrintSVGFooter(){
+  client.println("</svg>");
 }
 
 
 //*********************************************************************************************************************
-int Pick_Parameter_Zahl(const char * par, char * str) {
-  int myIdx = Find_End(par, str);
-  if (myIdx >= 0) return  Pick_Dec(str, myIdx);
-  else return -1;
-}
-
-//*********************************************************************************************************************
-int Find_Start(const char * such, const char * str) {
-  int tmp = -1;
-  int ll = strlen(such);
-  int ww = strlen(str) - ll;
-  for (int i = 0; i <= ww && tmp == -1; i++) {
-    if (strncmp(such, &str[i], ll) == 0) tmp = i;
+int findStart(const char * such, const char * str) {
+  char* occurance = strstr(str, such);
+  if (occurance != NULL){
+    return occurance-str;
+  }else{
+    return -1;
   }
-  return tmp;
 }
 
+
 //*********************************************************************************************************************
-int Find_End(const char * such, const char * str) {
-  int tmp = Find_Start(such, str);
+int findEnd(const char * such, const char * str) {
+  int tmp = findStart(such, str);
   if (tmp >= 0)tmp += strlen(such);
   return tmp;
 }
 
 //*********************************************************************************************************************
-int Pick_Dec(const char * tx, int idx ) {
+bool contains(const char * such, const char * str) {
+  return strstr(str, such) != NULL;
+}
+
+//*********************************************************************************************************************
+int pickDec(const char * tx, int idx ) {
   int tmp = 0;
-  for (int p = idx; p < idx + 5 && (tx[p] >= '0' && tx[p] <= '9') ; p++) {
+  for (int p = idx; p < idx + 5 && (tx[p] >= '0' && tx[p] <= '9') ; p++) {//alle Ziffern kopieren
     tmp = 10 * tmp + tx[p] - '0';
   }
   return tmp;
+}
+
+//*********************************************************************************************************************
+int pickZahl(const char * par, const char * str) {
+  int myIdx = findEnd(par, str);
+  if (myIdx >= 0) return  pickDec(str, myIdx);
+  else return -1;
 }

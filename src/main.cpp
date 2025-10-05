@@ -1,3 +1,17 @@
+//Ingos Tibber-Relais
+//
+//nach dem Bauvorschlag von Uwe Siebert make 5/24 im heise-Verlag
+//ESP8266 schaltet ein Relais nach den Strom-Preisen von tibber
+//Unterstützt werden stündliche oder viertelstündliche Strompreise
+//
+// * Über ingosserver.h wird eine html-Beidienoberfläche bereitgestellt
+// * diese zeigt auch die Preise als svg-Grafik
+// * Tiberpreise werden über JSON-API bei Tibber aberufen
+// * Die aktuelle Zeit wird über time.h und Internetzeit.h ermittelt
+//
+//Autor: DringoK
+//Version: siehe ***** Version ********** unten
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
@@ -7,17 +21,17 @@
 #include <EEPROM.h>
 
 // ********* Version **************
-#define vers "2025-09-28 Tibber Relais (Ingo)"
+#define vers "2025.1005 Tibber Relais (Ingo)"
 //const char *myHostName = "TibberRelais"; //<<<<<<<<<<<<<<<<<<<<<<<<<<< für Release: Namen ändern <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 const char *myHostName = "TibberTest";
 const char *tibberApi = "https://api.tibber.com/v1-beta/gql";
 
-//Debugging auf Konsole RS232 falls define nicht auskommentiert
-#define DEB_CONNECT    //wifi-Connect
-#define DEB_MAINLOOP   //alle Aktivitäten in der Main-Loop
-#define DEB_SCHALTEN   //Schalt-Vorgänge
-#define DEB_PREISE     //Preise nach dem Einlesen von tibber
-//#define DEB_HTML       //HTML-Verkehr in ingosserver.h
+//Debugging auf Konsole RS232 falls define aktiv (=nicht auskommentiert)
+#define DEB_CONNECT      //wifi-Connect
+#define DEB_MAINLOOP     //alle Aktivitäten in der Main-Loop
+#define DEB_SCHALTEN     //Schalt-Vorgänge
+#define DEB_PREISE       //Preise nach dem Einlesen von tibber
+#define DEB_HTML         //HTML-Verkehr in ingosserver.h
 //#define DEB_SVG        //SVG-Generierung in ingosserver.h
 //#define DEB_Zeit       //Zeit zyklisch ausgeben als Lebenszeichen, nur dann wird GET_TIME_INTERVAL verwendet
 #define GET_TIME_INTERVAL 10 //Zeit-Ausgabe-Intervall in Sekunden (unabhängig davon holt time.h die Zeit nur alle 60min aus vom NTP-Server)
@@ -29,27 +43,18 @@ const char* shelly_addr="";  //wenn leer, dann Shelly-Steckdose nicht verwenden
 //****** WLAN / Tibber-Server - Zugriff ***************
 //const char *ssid = "mySSID";         //--> replace with your own ssid and put it in a file credentials.h
 //const char *password = "myPassword"; //--> replace with your own wifi password and put it in a file credentials.h
-//const char *token = "3A77EECF61BD445F47241A5A36202185C35AF3AF58609E19B53F3A8872AD7BE1-1"; // API Tibber, Demo Token --> replace with your own token and put it in a file credentials.h
+// API Tibber, Demo Token --> replace with your own token and put it in a file credentials.h
+//const char *token = "Bearer 3A77EECF61BD445F47241A5A36202185C35AF3AF58609E19B53F3A8872AD7BE1-1"; //das Wort "Bearer " muss vor den eigentlichen Token
 #include "credentials.h" //here are Wifi Access credentials and tibber token stored, but not shared in GIT --> built your own credentials.h with just 3 lines like above with your credentials
 
 
 
-//*********** HTML-Oberfläche
-char puffer[500];  //Puffer für HTML-Request-Empfang. Request darf maximal 500 Byte sein
-bool refreshPressed=false; //ist nach wifi_traffic() true, wenn dort Aktualisieren gedrückt wurde, sonst false
-int startZeit=11, endeZeit=15;  //default-Werte für Zeitfenster aus der Maske
+//********* Wifi-Client
+bool connectToBestAccessPoint();    //wifiscan, um die richtige Fritzbox mit "SSID" zu finden, gibt true zurück, falls scan erfolgreich
+void connectWifi();                 //Verbinde mit Wifi als Client
+u16_t Reconnect_Zaehler = 0;
 
-enum MODUS {
-       mode_mittelwert_min=0, //(Mittelwert+preisMin)/2
-       mode_mittelwert=1,
-       mode_mittelwert_max=2, //(Mittelwert+preisMax)/2
-       mode_stundenzahl=3,
-       mode_ein=4,
-       mode_aus=5
-       };
-int modus = mode_mittelwert;
-int stundenzahl=1;     //wieviele Stunden aus html-Maske für mode_stundenzahl
-
+//********* Tibber Connection
 WiFiClientSecure client_sec;  
 HTTPClient https;
 
@@ -135,26 +140,14 @@ void setup() {
   pinMode(red, OUTPUT);
   digitalWrite(red, LOW); 
 
-  //conntect to WIFI und dabei abwechselnd rot/grün blinken
-  bool blink = false;
+    //Init Wifi
+  
+  WiFi.mode(WIFI_STA);  //station
   WiFi.hostname(myHostName);
-  WiFi.begin(ssid, password);
-  #ifdef DEB_CONNECT
-    Serial.println("\nConnecting to WiFi...");  // Wait for WiFi connection
-  #endif  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    #ifdef DEB_CONNECT
-      Serial.print(".");
-    #endif  
-    digitalWrite(red, blink);
-    digitalWrite(green, !blink);
-    blink = !blink;
-  }
+  connectWifi();              //erster Connect hier im Setup (dann für Reconnect zyklisch im loop falls not WL_CONNECTED)
+    
+    //Init Web-Server
   server.begin();
-  #ifdef DEB_CONNECT
-    Serial.printf("\nconnected, address=%s; Hostname=%s, Version= %s\r\n",WiFi.localIP().toString().c_str(),WiFi.hostname().c_str(),vers);
-  #endif
 
   //Werte der Eingabemaske aus EEPROM holen
   eeprom_loadAll();
@@ -181,6 +174,10 @@ void setup() {
 unsigned long millis_nextTMUpdate = 0;        //Zeitpunkt in millis, an dem die Internet-Zeit als nächstes wieder abgerufen werden soll
 unsigned long millis_nextRetryGetPreise = 0;  //Zeitpunkt in millis, an dem die Preise als nächstes wieder abgerufen werden sollen (Retry delay)
 void loop() {
+  if (WiFi.status() != WL_CONNECTED){  //damit auch reconnect möglich
+    connectWifi();
+  }
+
   //uwes_ota(); //load Sketch over the air (OTA) = WLAN , damit läuft es nicht mehr stabil: der Heap wird immer kleiner bis zum Crash
 
   //zyklisch die Internet-Zeit in die struct tm übernehmen
@@ -234,13 +231,13 @@ void loop() {
   }
 
   //falls es eine Eingabe über die html-Maske gegeben hat
-  if( wifi_traffic() ) { // es hat eine Eingabe ueber die html-Maske gegeben, bei Änderungen wird preisabhaengig_schalten() aufgerufen
+  if( handleWifiTraffic() ) { // es hat eine Eingabe ueber die html-Maske gegeben, bei Änderungen wird preisabhaengig_schalten() aufgerufen
     #ifdef DEB_MAINLOOP
       serialPrintTimeShort();
       Serial.println("-> Wifi Traffic");
     #endif
 
-    eeprom_requestSaveAll();
+    //eeprom_requestSaveAll(); !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Diese Zeile wieder aktivieren vor Release!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     if (refreshPressed){
       hole_tibber_preise();
@@ -253,6 +250,76 @@ void loop() {
   delay(100); 
 } //loop ende
 
+//*********************************************************************************
+void connectWifi()
+{
+  Reconnect_Zaehler++;
+
+  if (!connectToBestAccessPoint()){  //probiere erst über Scan zu verbinden
+    WiFi.begin(ssid, password); // und wenn das nicht klappt, dann "normal"
+  }  
+
+  #ifdef DEB_CONNECT
+    Serial.println("\nConnecting to WiFi..."); // Wait for WiFi connection
+  #endif
+
+  bool blink = false;
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    #ifdef DEB_CONNECT
+      Serial.print(".");
+    #endif
+    digitalWrite(red, blink);
+    digitalWrite(green, !blink);
+    blink = !blink;
+  }
+}
+
+//***********************************
+bool connectToBestAccessPoint() {
+  #ifdef DEB_CONNECT
+    Serial.println("\nStarte vollständigen WLAN-Scan...");
+  #endif  
+  
+  int n = 0;
+  n = WiFi.scanNetworks(false, false, 0, (uint8*)ssid); //nicht async, nicht showHidden, 0=alle Channels, nur solche mit Namen ssid
+  #ifdef DEB_CONNECT
+    Serial.printf("%d Netzwerke gefunden\n", n);
+  #endif  
+
+
+  if (n == 0) {
+    return false;
+  }
+  int bestNetwork = -1;
+  int bestSignal = -100; // Niedriger Wert bedeutet schwaches Signal
+
+  for (int i = 0; i < n; i++) {
+    #ifdef DEB_CONNECT
+      Serial.printf("SSID=%s | MAC=%s | RSSI=%d\n", WiFi.SSID(i).c_str(), WiFi.BSSIDstr(i).c_str(), WiFi.RSSI(i));
+    #endif
+    if (WiFi.SSID(i) == ssid && WiFi.RSSI(i) > bestSignal) {
+      bestSignal = WiFi.RSSI(i);
+      bestNetwork = i;
+    }
+  }
+  
+  if (bestNetwork != -1) {
+    #ifdef DEB_CONNECT
+      Serial.print("Verbinde mit: ");
+      Serial.println(WiFi.BSSIDstr(bestNetwork));
+    #endif  
+    WiFi.begin(ssid, password, 0, WiFi.BSSID(bestNetwork));
+  } else {
+    #ifdef DEB_CONNECT
+      Serial.println("Kein passendes Netzwerk gefunden!");
+      return false;
+    #endif  
+  }
+  return true;
+}
 
 //*****************************************************************************
 //wird aufgerufen wenn neue Preise von Tibber geholt wurden
@@ -404,11 +471,11 @@ void preiseRuecksetzen(){
 // Json-String von tibber holen und mit preise_aus_jsonStr() in preise[] übernehmen
 // aufgerufen direkt nach dem Start und wenn neue Preise zur Verfügung stehen
 void hole_tibber_preise() { 
-  strcpy(puffer, "Bearer ");
-  strcat(puffer, token);
+  //strcpy(puffer, "Bearer ");
+  //strcat(puffer, token);
   https.begin(client_sec, tibberApi);
   https.addHeader("Content-Type", "application/json");  // add necessary headers
-  https.addHeader("Authorization",  puffer);            // add necessary headers
+  https.addHeader("Authorization",  token);             // add necessary headers
 
   static const char *anfrage = "{\"query\": \"{viewer { homes { currentSubscription{ priceInfo (resolution: HOURLY){ today{ total  } tomorrow { total  }}}}}}\"}";
   int httpCode = https.POST(anfrage);
@@ -538,6 +605,7 @@ void schalten (bool ein) {
 void shelly(bool ein) {
   WiFiClient client;
   HTTPClient http;
+  char puffer[50];
   //Serial.print("[HTTP] begin...\n");
   strcpy(puffer,"http://");    //ip-Adresse aus Eingabemaske kopieren, 
   strcat(puffer,shelly_addr);  //Bsp: fertiger String: "http://192.168.178.133/relay/0?turn=on"

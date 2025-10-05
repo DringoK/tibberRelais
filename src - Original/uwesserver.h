@@ -15,7 +15,7 @@ void make_HTML02() ;
 void make_HTML_tabelle();
 void send_bin(const unsigned char * , int, const char * , const char * ) ;
 void send_not_found() ;
-void send_HTML() ;
+void clientPrintHTMLBody() ;
 void set_colgroup( int, int, int, int, int) ;
 void set_colgroup1( int ) ;
 void strcati(char* , int ) ;
@@ -91,7 +91,7 @@ int wifi_traffic() {
   strcat(HTTP_Header, "\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n");
   client1.print(HTTP_Header);
   delay(20);
-  send_HTML();
+  clientPrintHTMLBody();
   return(1);
 }
 //*********************************************************************************************************************
@@ -257,7 +257,7 @@ void send_not_found() {
   client1.stop();
 }
 //*********************************************************************************************************************
-void send_HTML() {
+void clientPrintHTMLBody() {
   char my_char;
   int  my_len = strlen(puffer);
   int  my_ptr = 0;
